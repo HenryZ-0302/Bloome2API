@@ -73,6 +73,8 @@ function getAnthropicDefaultMaxTokens(c: Context, model: string): number {
 
   const m = String(model || "").toLowerCase();
   const exactDefaults: Record<string, number> = {
+    "claude-opus-4-8": 128000,
+    "claude-opus-4-8-thinking": 128000,
     "claude-opus-4-7": 128000,
     "claude-opus-4-7-thinking": 128000,
     "claude-opus-4-6": 128000,
@@ -454,6 +456,8 @@ async function checkUpstreamHealth(c: Context): Promise<any> {
 }
 
 const MODELS = [
+  { id: "claude-opus-4-8", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-opus-4-8", parent: null },
+  { id: "claude-opus-4-8-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-opus-4-8-thinking", parent: "claude-opus-4-8" },
   { id: "claude-opus-4-7", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-opus-4-7", parent: null },
   { id: "claude-opus-4-7-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-opus-4-7-thinking", parent: "claude-opus-4-7" },
   { id: "claude-opus-4-6", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-opus-4-6", parent: null },
@@ -507,6 +511,7 @@ function getClaudeThinkingConfig(model: string): { publicModel: string; upstream
   }
 
   switch (upstreamModel) {
+    case "claude-opus-4-8":
     case "claude-opus-4-7":
       return {
         publicModel,

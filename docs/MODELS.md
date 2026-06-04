@@ -25,10 +25,12 @@
 
 | 展示名 | 公开调用名（alias） | 协议入口 | 实际上游模型 | 重定向/套壳 | 备注 |
 |---|---|---|---|---|---|
+| Claude Opus 4.8 | `claude-opus-4-8` | Anthropic | `claude-opus-4-8` | 否 | 返回名未变 |
 | Claude Opus 4.7 | `claude-opus-4-7` | Anthropic | `claude-opus-4-7` | 否 | 返回名未变 |
 | Claude Opus 4.6 | `claude-opus-4-6` | Anthropic | `claude-opus-4-6` | 否 | 返回名未变 |
 | Claude Sonnet 4.6 | `claude-sonnet-4-6` | Anthropic | `claude-sonnet-4-6` | 否 | 返回名未变 |
 | Claude Haiku 4.5 | `claude-haiku-4-5` | Anthropic | `claude-haiku-4-5-20251001` | 否 | 返回为带日期后缀的具体版本 |
+| Claude Opus 4.8 Thinking | `claude-opus-4-8-thinking` | Anthropic | `claude-opus-4-8` | 否 | thinking alias；走 adaptive thinking；代理会提取 `thinking` / `thinking_delta` 映射到 `reasoning_content` |
 | Claude Opus 4.7 Thinking | `claude-opus-4-7-thinking` | Anthropic | `claude-opus-4-7` | 否 | thinking alias；代理会提取 `thinking` / `thinking_delta` 映射到 `reasoning_content` |
 | Claude Opus 4.6 Thinking | `claude-opus-4-6-thinking` | Anthropic | `claude-opus-4-6` | 否 | thinking alias；代理会提取 `thinking` / `thinking_delta` 映射到 `reasoning_content` |
 | Claude Sonnet 4.6 Thinking | `claude-sonnet-4-6-thinking` | Anthropic | `claude-sonnet-4-6` | 否 | thinking alias；代理会提取 `thinking` / `thinking_delta` 映射到 `reasoning_content` |
@@ -136,6 +138,7 @@ GPT 路径兼容上游自动 prompt cache：
 
 Claude / MiniMax 走 Anthropic 协议，`max_tokens` 必填。网关在用户未传时按具体 alias 补默认上限：
 
+- `claude-opus-4-8` / `claude-opus-4-8-thinking`：`128000`
 - `claude-opus-4-7` / `claude-opus-4-7-thinking`：`128000`
 - `claude-opus-4-6` / `claude-opus-4-6-thinking`：`128000`
 - `claude-sonnet-4-6` / `claude-sonnet-4-6-thinking`：`128000`

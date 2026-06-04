@@ -7,6 +7,8 @@ const deployScript = readFileSync(new URL("../scripts/deploy-edgespark.sh", impo
 const deployDoc = readFileSync(new URL("../DEPLOY.md", import.meta.url), "utf8");
 const deployNotes = readFileSync(new URL("../DEPLOY_NOTES.md", import.meta.url), "utf8");
 const deployLocalScript = readFileSync(new URL("../scripts/deploy-local.sh", import.meta.url), "utf8");
+const modelsDoc = readFileSync(new URL("../docs/MODELS.md", import.meta.url), "utf8");
+const thinkingDoc = readFileSync(new URL("../docs/THINKING.md", import.meta.url), "utf8");
 
 test("public v1 exposes Anthropic Messages and OpenAI Responses compatibility routes", () => {
   assert.match(source, /API_PREFIX}\/messages`/);
@@ -55,6 +57,29 @@ test("public runtime surface is white-label", () => {
   assert.doesNotMatch(source, /owned_by: "reson"/);
   assert.doesNotMatch(source, /bloome2api\.compaction/);
   assert.doesNotMatch(source, /`bloome-\$\{hashString/);
+});
+
+test("model catalog includes Claude Opus 4.8 with adaptive thinking", () => {
+  assert.match(source, /id: "claude-opus-4-8"/);
+  assert.match(source, /id: "claude-opus-4-8-thinking"/);
+  assert.match(source, /"claude-opus-4-8": 128000/);
+  assert.match(source, /"claude-opus-4-8-thinking": 128000/);
+
+  const thinkingStart = source.indexOf("function getClaudeThinkingConfig");
+  const googleStart = source.indexOf("function isGoogleModel");
+  assert.ok(thinkingStart > 0);
+  assert.ok(googleStart > thinkingStart);
+  const thinkingSource = source.slice(thinkingStart, googleStart);
+  assert.match(thinkingSource, /case "claude-opus-4-8":/);
+  assert.match(thinkingSource, /thinking: \{ type: "adaptive", display: "summarized" \}/);
+  assert.match(thinkingSource, /output_config: \{ effort: "medium" \}/);
+
+  assert.match(modelsDoc, /Claude Opus 4\.8/);
+  assert.match(modelsDoc, /`claude-opus-4-8-thinking`/);
+  assert.match(modelsDoc, /`claude-opus-4-8` \/ `claude-opus-4-8-thinking`：`128000`/);
+  assert.match(thinkingDoc, /`claude-opus-4-8-thinking`/);
+  assert.match(thinkingDoc, /\| `claude-opus-4-8` \| 可用 \| 不支持 \| 支持/);
+  assert.match(source, /PUBLIC_MODEL_OWNER/);
 });
 
 test("translated Chat Completions handle developer messages and stream usage", () => {

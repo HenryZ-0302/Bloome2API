@@ -37,10 +37,11 @@
 
 对于“默认不返回思考，但可以通过官方参数开启思考模式”的模型，新增一个显式 alias：
 
+- `claude-opus-4-8-thinking`
+- `claude-opus-4-7-thinking`
 - `claude-opus-4-6-thinking`
 - `claude-sonnet-4-6-thinking`
 - `claude-haiku-4-5-thinking`
-- `claude-opus-4-7-thinking`
 - `gemini-3.1-pro-thinking`
 - `gemini-3-flash-thinking`
 - `gpt-5.4-thinking`
@@ -84,6 +85,7 @@
 
 建议优先支持：
 
+- `claude-opus-4-8-thinking`
 - `claude-opus-4-7-thinking`
 - `claude-opus-4-6-thinking`
 - `claude-sonnet-4-6-thinking`
@@ -143,12 +145,13 @@ thinkingConfig: {
 
 | 模型 | 普通模式 | `thinking.enabled` | `thinking.adaptive` | 流式 `thinking_delta` | 结论 |
 |---|---|---|---|---|---|
+| `claude-opus-4-8` | 可用 | 不支持 | 支持 | 待继续补测 | 4.8 必须走 adaptive |
 | `claude-opus-4-7` | 可用 | 不支持 | 支持 | 待继续补测 | 4.7 必须走 adaptive |
 | `claude-opus-4-6` | 可用 | 支持 | 支持 | 已确认存在 | 最适合第一批实现 |
 | `claude-sonnet-4-6` | 可用 | 支持 | 支持 | 已确认存在 | 最适合第一批实现 |
 | `claude-haiku-4-5` | 可用 | 支持 | 不支持 | 已确认存在（enabled） | 只能走 enabled |
 
-### Claude Opus 4.7
+### Claude Opus 4.8 / 4.7
 
 实测已确认：
 
@@ -165,7 +168,7 @@ thinkingConfig: {
 
 > Use `thinking.type.adaptive` and `output_config.effort` to control thinking behavior.
 
-因此 `claude-opus-4-7-thinking` 的最终实现应优先考虑：
+因此 `claude-opus-4-8-thinking` / `claude-opus-4-7-thinking` 的最终实现应优先考虑：
 
 > 当前实测表明：即使显式传入 `display: "summarized"`，现阶段 provider 上游 / 当前 Bedrock 路由仍可能只返回正文、不返回可见 thinking summary。也就是说，代理侧已按官方推荐参数开启，但当前上游未必透传可见 summary。
 
@@ -325,6 +328,7 @@ thinkingConfig: {
 
 建议第一批只做：
 
+- `claude-opus-4-8-thinking`
 - `claude-opus-4-7-thinking`
 - `claude-opus-4-6-thinking`
 - `claude-sonnet-4-6-thinking`
