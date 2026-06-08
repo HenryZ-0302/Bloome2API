@@ -40,6 +40,7 @@
 
 - `/responses` 是无状态兼容层，不持久化 `response_id` / conversation；继续对话需要客户端传完整上下文。
 - `/responses/compact` 返回的 compaction item 可被本项目后续请求识别，但不是 OpenAI 官方平台加密格式。
+- `/chat/completions` 可识别 `type: "compaction"` item，会在代理层展开成本项目生成的上下文摘要。
 - `/responses/input_tokens` 当前仅对 Anthropic 兼容模型转发真实上游 token count；其他协议族会返回 `not_supported_error`。
 - `/messages` 和 `/messages/count_tokens` 保持 Anthropic 原生请求/响应结构，适合 Anthropic SDK 兼容接入。
 

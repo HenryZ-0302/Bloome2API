@@ -3,6 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const source = readFileSync(new URL("../src/index.ts", import.meta.url), "utf8");
+const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
 const deployScript = readFileSync(new URL("../scripts/deploy-edgespark.sh", import.meta.url), "utf8");
 const deployDoc = readFileSync(new URL("../DEPLOY.md", import.meta.url), "utf8");
 const deployNotes = readFileSync(new URL("../DEPLOY_NOTES.md", import.meta.url), "utf8");
@@ -100,6 +101,15 @@ test("Responses streaming emits item and content lifecycle events", () => {
   assert.match(source, /response\.content_part\.done/);
   assert.match(source, /response\.output_item\.done/);
   assert.match(source, /writeResponseNonTextOutputEvents/);
+});
+
+test("Chat Completions can consume local compaction items", () => {
+  assert.match(source, /function normalizeChatCompactionMessages/);
+  assert.match(source, /chatCompactionItemToSystemMessage/);
+  assert.match(source, /body\.messages = normalizeChatCompactionMessages\(body\.messages\)/);
+  assert.match(source, /item\.type === "compaction"/);
+  assert.match(readme, /\/chat\/completions` 可识别 `type: "compaction"`/);
+  assert.match(modelsDoc, /`\/chat\/completions` 也可以消费本项目的 `type: "compaction"` item/);
 });
 
 test("Responses internal errors keep the public safe-error policy", () => {
@@ -201,6 +211,8 @@ test("deploy docs require user-provided client key and copyable success report",
   assert.match(deployDoc, /各自单独放在代码块里/);
   assert.match(deployDoc, /Base URL\s+```text\s+https:\/\/<域名>\.edgespark\.app\/api\/public\/v1\s+```/s);
   assert.match(deployDoc, /API Key\s+```text\s+<CLIENT_API_KEY>\s+```/s);
+  assert.match(deployDoc, /是否需要我删除本次部署使用的项目文件夹\/临时工作目录/);
+  assert.match(deployDoc, /默认不删除；确认后才执行删除/);
   assert.doesNotMatch(deployDoc, /环境变量对比值/);
   assert.doesNotMatch(deployDoc, /PROVIDER_API_KEY=<当前部署使用的 PROVIDER_API_KEY>/);
   assert.doesNotMatch(deployDoc, /APP_DEV_MODE=<未设置或当前值>/);

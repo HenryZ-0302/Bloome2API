@@ -1597,6 +1597,46 @@ function decodeCompactionSummary(encryptedContent: any): string | null {
   return null;
 }
 
+function compactionSummaryMessageContent(encryptedContent: any): string {
+  const summary = decodeCompactionSummary(encryptedContent);
+  return summary
+    ? `Context compaction summary:\n${summary}`
+    : "Context compaction item is opaque and cannot be expanded by this gateway.";
+}
+
+function chatCompactionItemToSystemMessage(item: any): any {
+  return { role: "system", content: compactionSummaryMessageContent(item?.encrypted_content) };
+}
+
+function normalizeChatCompactionMessages(messages: any): any {
+  if (!Array.isArray(messages)) return messages;
+  const normalized: any[] = [];
+
+  for (const item of messages) {
+    if (item?.type === "compaction") {
+      normalized.push(chatCompactionItemToSystemMessage(item));
+      continue;
+    }
+
+    if (item && typeof item === "object" && Array.isArray(item.content)) {
+      normalized.push({
+        ...item,
+        content: item.content.map((part: any) => {
+          if (part?.type === "compaction") {
+            return { type: "text", text: compactionSummaryMessageContent(part.encrypted_content) };
+          }
+          return part;
+        }),
+      });
+      continue;
+    }
+
+    normalized.push(item);
+  }
+
+  return normalized;
+}
+
 function responsesInputToChatMessages(input: any): any[] {
   if (input == null) return [];
   if (typeof input === "string") return [{ role: "user", content: input }];
@@ -1611,12 +1651,9 @@ function responsesInputToChatMessages(input: any): any[] {
     }
 
     if (item.type === "compaction") {
-      const summary = decodeCompactionSummary(item.encrypted_content);
       messages.push({
         role: "system",
-        content: summary
-          ? `Context compaction summary:\n${summary}`
-          : "Context compaction item is opaque and cannot be expanded by this gateway.",
+        content: compactionSummaryMessageContent(item.encrypted_content),
       });
       continue;
     }
@@ -2293,6 +2330,7 @@ app.post(`${API_PREFIX}/chat/completions`, async (c) => {
   if (!body) {
     return jsonError(c, 400, "invalid_request_error");
   }
+  body.messages = normalizeChatCompactionMessages(body.messages);
 
   // Reasoning models require max_completion_tokens, not max_tokens
   if (isReasoningModel(body.model)) {

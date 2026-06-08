@@ -87,6 +87,7 @@ Claude / MiniMax / Gemini 会在代理层进行 OpenAI `tools` / `tool_calls` �
 
 - `/responses` 是无状态 shim，不保存 response / conversation；`previous_response_id` 和 conversation 持久化语义不会被伪装。
 - `/responses/compact` 会用当前模型生成摘要，返回 `response.compaction`。其中 `encrypted_content` 是本项目可识别的 opaque payload，不是 OpenAI 官方平台加密格式。
+- `/chat/completions` 也可以消费本项目的 `type: "compaction"` item，并在代理层展开成上下文摘要。
 - `/responses/input_tokens` 只在 Anthropic 兼容模型上转真实上游 token count。其他模型族会返回 `not_supported_error`，避免用估算值冒充官方计数。
 - `/messages` 保持 Anthropic 原生格式，适合 Anthropic SDK；Claude / MiniMax 的 OpenAI Chat 翻译路径仍然保留。
 
