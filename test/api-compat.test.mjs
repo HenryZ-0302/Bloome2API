@@ -10,6 +10,7 @@ const deployNotes = readFileSync(new URL("../DEPLOY_NOTES.md", import.meta.url),
 const deployLocalScript = readFileSync(new URL("../scripts/deploy-local.sh", import.meta.url), "utf8");
 const modelsDoc = readFileSync(new URL("../docs/MODELS.md", import.meta.url), "utf8");
 const thinkingDoc = readFileSync(new URL("../docs/THINKING.md", import.meta.url), "utf8");
+const compactionDoc = readFileSync(new URL("../docs/COMPACTION.md", import.meta.url), "utf8");
 
 test("public v1 exposes Anthropic Messages and OpenAI Responses compatibility routes", () => {
   assert.match(source, /API_PREFIX}\/messages`/);
@@ -110,6 +111,20 @@ test("Chat Completions can consume local compaction items", () => {
   assert.match(source, /item\.type === "compaction"/);
   assert.match(readme, /\/chat\/completions` 可识别 `type: "compaction"`/);
   assert.match(modelsDoc, /`\/chat\/completions` 也可以消费本项目的 `type: "compaction"` item/);
+});
+
+test("manual compaction docs describe the explicit client-controlled loop", () => {
+  assert.match(readme, /docs\/COMPACTION\.md/);
+  assert.match(modelsDoc, /COMPACTION\.md/);
+  assert.match(compactionDoc, /Manual Context Compaction/);
+  assert.match(compactionDoc, /manual context compaction loop/);
+  assert.match(compactionDoc, /not automatic compression/);
+  assert.match(compactionDoc, /not conversation persistence/);
+  assert.match(compactionDoc, /not OpenAI's official encrypted platform format/);
+  assert.match(compactionDoc, /POST \/responses\/compact/);
+  assert.match(compactionDoc, /"type": "compaction"/);
+  assert.match(compactionDoc, /\$BASE_URL\/responses"/);
+  assert.match(compactionDoc, /\$BASE_URL\/chat\/completions"/);
 });
 
 test("Responses internal errors keep the public safe-error policy", () => {
@@ -250,4 +265,10 @@ test("local deploy wrapper keeps secrets explicit and supports optional verifica
   assert.match(deployNotes, /upstream_auth_error/);
   assert.match(deployNotes, /PROVIDER_API_KEY.*截断/);
   assert.match(deployNotes, /都当成 deploy 前必须存在/);
+  assert.match(deployNotes, /`secret call` 不透传外部环境变量/);
+  assert.match(deployNotes, /不会继承外层的 `RESON_LLM_API_KEY` \/ `CLIENT_API_KEY`/);
+  assert.match(deployNotes, /不要继续折腾 heredoc 或多层 shell 引号/);
+  assert.match(deployNotes, /edgespark var set PROVIDER_API_KEY=/);
+  assert.match(deployNotes, /HOT_DEPLOY_ONLY=1 \.\/scripts\/deploy-edgespark\.sh/);
+  assert.match(deployNotes, /不要为了通过 deploy 去补空的 `PROVIDER_BASE_URL`/);
 });

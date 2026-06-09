@@ -71,6 +71,33 @@ Agent 环境可能只有一个云端 CLI 命令：
 
 不要依赖交互式 `edgespark login`。
 
+### `secret call` 不透传外部环境变量
+
+有些 Agent 环境里，`secret call` 子进程只注入被调用的 EdgeSpark secret，不会继承外层的 `RESON_LLM_API_KEY` / `CLIENT_API_KEY`。这种情况下不要继续折腾 heredoc 或多层 shell 引号，直接拆成两步：
+
+1. 先在 `secret call` 内完成 `edgespark var set`，显式设置必填 runtime vars：
+
+```bash
+<cloud-cli> secret call EDGESPARK_API_KEY__<ALIAS>__<SUFFIX> -- bash -c '
+  export EDGESPARK_API_KEY="$EDGESPARK_API_KEY__<ALIAS>__<SUFFIX>";
+  export EDGESPARK_PROJECT_ENVIRONMENT=production;
+  cd edgespark/<alias>;
+  edgespark var set PROVIDER_API_KEY="<完整 PROVIDER_API_KEY>" CLIENT_API_KEY="<用户给的客户端密码>"
+'
+```
+
+2. 再走热部署，只同步源码和 deploy，跳过 runtime var 同步：
+
+```bash
+<cloud-cli> secret call EDGESPARK_API_KEY__<ALIAS>__<SUFFIX> -- bash -c '
+  export EDGESPARK_API_KEY="$EDGESPARK_API_KEY__<ALIAS>__<SUFFIX>";
+  export EDGESPARK_PROJECT_ENVIRONMENT=production;
+  HOT_DEPLOY_ONLY=1 ./scripts/deploy-edgespark.sh <alias>
+'
+```
+
+只设置 `PROVIDER_API_KEY` 和 `CLIENT_API_KEY` 这两个必填项。不要为了通过 deploy 去补空的 `PROVIDER_BASE_URL`、`ANTHROPIC_DEFAULT_MAX_TOKENS`、`GEMINI_DEFAULT_MAX_TOKENS`、`APP_DEV_MODE`；当前脚本会按实际同步的变量动态生成 `VarKey`。
+
 ---
 
 ## 3. 密钥安全红线

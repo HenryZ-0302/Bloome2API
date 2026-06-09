@@ -17,6 +17,7 @@
 - 内置多模型路由与协议转换
 - 支持 `tools` / `tool_calls`
 - 支持 `-thinking` / `reasoning_content` 兼容
+- 支持手动上下文压缩闭环
 - 支持 CORS
 - 返回 `x-request-id`
 - 提供深度 `health` 检查
@@ -43,6 +44,8 @@
 - `/chat/completions` 可识别 `type: "compaction"` item，会在代理层展开成本项目生成的上下文摘要。
 - `/responses/input_tokens` 当前仅对 Anthropic 兼容模型转发真实上游 token count；其他协议族会返回 `not_supported_error`。
 - `/messages` 和 `/messages/count_tokens` 保持 Anthropic 原生请求/响应结构，适合 Anthropic SDK 兼容接入。
+
+手动上下文压缩用法见 [docs/COMPACTION.md](docs/COMPACTION.md)。
 
 ---
 
@@ -119,6 +122,7 @@ curl -X POST http://localhost:3000/api/public/v1/chat/completions \
 ## 说明
 
 - 核心源码入口：`src/index.ts`
+- 手动上下文压缩说明：`docs/COMPACTION.md`
 - 模型映射说明：`docs/MODELS.md`
 - thinking / reasoning 说明：`docs/THINKING.md`
 

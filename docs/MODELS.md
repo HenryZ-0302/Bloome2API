@@ -91,6 +91,8 @@ Claude / MiniMax / Gemini 会在代理层进行 OpenAI `tools` / `tool_calls` �
 - `/responses/input_tokens` 只在 Anthropic 兼容模型上转真实上游 token count。其他模型族会返回 `not_supported_error`，避免用估算值冒充官方计数。
 - `/messages` 保持 Anthropic 原生格式，适合 Anthropic SDK；Claude / MiniMax 的 OpenAI Chat 翻译路径仍然保留。
 
+手动上下文压缩调用示例见 [COMPACTION.md](COMPACTION.md)。
+
 ### 3. 关于错误分类
 
 公开错误响应会保持安全默认值：返回稳定的 `error.type`、`error.code` 和 `request_id`，不暴露原始上游错误。只有 `APP_DEV_MODE=true` 时才会额外返回 `error.detail`。
