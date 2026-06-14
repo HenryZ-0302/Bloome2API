@@ -42,8 +42,10 @@
 - `claude-opus-4-6-thinking`
 - `claude-sonnet-4-6-thinking`
 - `claude-haiku-4-5-thinking`
+- `MiniMax-M3-thinking`
 - `gemini-3.1-pro-thinking`
 - `gemini-3-flash-thinking`
+- `gemini-3.5-flash-thinking`
 - `gpt-5.4-thinking`
 - `gpt-5.4-mini-thinking`
 - `gpt-5.5-thinking`
@@ -69,7 +71,6 @@
 - `kimi-k2.5`
 - `deepseek-v4-pro`
 - `deepseek-v4-flash`
-- `deepseek-v3-2`
 
 原因：
 
@@ -99,10 +100,11 @@
 
 ## 第二批：Gemini 家族
 
-建议后续支持：
+当前已实现：
 
 - `gemini-3.1-pro-thinking`
 - `gemini-3-flash-thinking`
+- `gemini-3.5-flash-thinking`
 
 前提是确认上游在启用：
 
@@ -137,7 +139,20 @@ thinkingConfig: {
 补充：
 
 - `gpt-5.5` 和 `gpt-5.4` 一样，属于需要 `max_completion_tokens` 的 reasoning 模型
-- `glm-5.0` / `glm-5.1` / `kimi-k2.5` / `kimi-k2.6` / `deepseek-v3-2` / `deepseek-v4-pro` / `deepseek-v4-flash` 这类模型本身已经返回 `reasoning_content`，不建议再额外加 `-thinking`
+- `glm-5.1` / `kimi-k2.5` / `kimi-k2.6` / `deepseek-v4-pro` / `deepseek-v4-flash` 这类模型本身已经返回 `reasoning_content`，不建议再额外加 `-thinking`
+
+## MiniMax 家族
+
+当前已实现：
+
+- `MiniMax-M3-thinking`
+
+实现方式：
+
+- 对外保留 `-thinking` alias
+- 上游请求映射回普通模型：`MiniMax-M3`
+- 代理注入 `thinking: { "type": "adaptive" }`
+- 非流式 `thinking` block 和流式 `thinking_delta` 会统一映射到 `reasoning_content`
 
 ## Claude 家族的已确认行为
 

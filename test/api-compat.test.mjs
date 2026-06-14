@@ -84,6 +84,35 @@ test("model catalog includes Claude Opus 4.8 with adaptive thinking", () => {
   assert.match(source, /PUBLIC_MODEL_OWNER/);
 });
 
+test("model catalog includes MiniMax M3 and Gemini 3.5 Flash", () => {
+  assert.match(source, /id: "MiniMax-M3"/);
+  assert.match(source, /id: "MiniMax-M3-thinking"/);
+  assert.match(source, /id: "gemini-3\.5-flash"/);
+  assert.match(source, /id: "gemini-3\.5-flash-thinking"/);
+  assert.match(source, /"minimax-m3": 131072/);
+  assert.match(source, /"minimax-m3-thinking": 131072/);
+  assert.match(source, /"gemini-3\.5-flash": 65536/);
+  assert.match(source, /"gemini-3\.5-flash-thinking": 65536/);
+  assert.match(source, /model === "MiniMax-M3"/);
+  assert.match(source, /model === "MiniMax-M3-thinking"/);
+  assert.match(source, /case "MiniMax-M3":/);
+  assert.match(source, /thinking: \{ type: "adaptive" \}/);
+  assert.match(modelsDoc, /MiniMax M3/);
+  assert.match(modelsDoc, /`MiniMax-M3`/);
+  assert.match(modelsDoc, /`MiniMax-M3-thinking`/);
+  assert.match(modelsDoc, /Gemini 3\.5 Flash/);
+  assert.match(modelsDoc, /`gemini-3\.5-flash`/);
+  assert.match(modelsDoc, /`gemini-3\.5-flash-thinking`/);
+  assert.match(thinkingDoc, /`MiniMax-M3-thinking`/);
+  assert.match(thinkingDoc, /`gemini-3\.5-flash-thinking`/);
+  assert.doesNotMatch(source, /id: "glm-5\.0"/);
+  assert.doesNotMatch(source, /id: "deepseek-v3-2"/);
+  assert.doesNotMatch(modelsDoc, /\| GLM 5\.0 \|/);
+  assert.doesNotMatch(modelsDoc, /\| DeepSeek V3\.2 \|/);
+  assert.doesNotMatch(thinkingDoc, /`glm-5\.0`/);
+  assert.doesNotMatch(thinkingDoc, /`deepseek-v3-2`/);
+});
+
 test("translated Chat Completions handle developer messages and stream usage", () => {
   assert.match(source, /m\.role === "developer"/);
   assert.match(source, /wantsStreamUsage/);

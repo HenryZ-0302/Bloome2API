@@ -36,13 +36,14 @@
 | Claude Sonnet 4.6 Thinking | `claude-sonnet-4-6-thinking` | Anthropic | `claude-sonnet-4-6` | 否 | thinking alias；代理会提取 `thinking` / `thinking_delta` 映射到 `reasoning_content` |
 | Claude Haiku 4.5 Thinking | `claude-haiku-4-5-thinking` | Anthropic | `claude-haiku-4-5-20251001` | 否 | thinking alias；固定走 `enabled + budget_tokens` |
 | MiniMax M2.7 | `MiniMax-M2.7` | Anthropic | `MiniMax-M2.7` | 否 | 注意大小写敏感 |
+| MiniMax M3 | `MiniMax-M3` | Anthropic | `MiniMax-M3` | 否 | 新模型；注意大小写敏感 |
+| MiniMax M3 Thinking | `MiniMax-M3-thinking` | Anthropic | `MiniMax-M3` | 否 | thinking alias；走 `adaptive` thinking；注意大小写敏感 |
 | GPT 5.4 | `gpt-5.4` | OpenAI | `gpt-5.4-2026-03-05` | 否 | 返回为带日期后缀的具体版本 |
 | GPT 5.4 Thinking | `gpt-5.4-thinking` | OpenAI | `gpt-5.4-2026-03-05` | 否 | thinking alias；代理会映射到 `gpt-5.4` 并注入 `reasoning_effort: medium` |
 | GPT 5.4 Mini | `gpt-5.4-mini` | OpenAI | `gpt-5.4-mini-2026-03-17` | 否 | 返回为带日期后缀的具体版本 |
 | GPT 5.4 Mini Thinking | `gpt-5.4-mini-thinking` | OpenAI | `gpt-5.4-mini-2026-03-17` | 否 | thinking alias；代理会映射到 `gpt-5.4-mini` 并注入 `reasoning_effort: medium` |
 | GPT 5.5 | `gpt-5.5` | OpenAI | `gpt-5.5-2026-04-24` | 否 | 新模型；需要 `max_completion_tokens` |
 | GPT 5.5 Thinking | `gpt-5.5-thinking` | OpenAI | `gpt-5.5-2026-04-24` | 否 | thinking alias；代理会映射到 `gpt-5.5` 并注入 `reasoning_effort: medium` |
-| GLM 5.0 | `glm-5.0` | OpenAI | `glm-5` | 是 | 展示层未列出；仓库额外公开的基础 alias |
 | GLM 5.1 | `glm-5.1` | OpenAI | `glm-5.1` | 否 | 返回名未变 |
 | Kimi K2.6 | `kimi-k2.6` | OpenAI | `kimi-k2.6` | 否 | 返回名未变 |
 | Kimi K2.5 | `kimi-k2.5` | OpenAI | `kimi-k2.6` | 是 | 公开 alias 保留 K2.5，实际上游落到 K2.6 |
@@ -50,11 +51,12 @@
 | Xiaomi MiMo V2.5 | `mimo-v2-omni` | OpenAI | `mimo-v2-omni` | 否 | 展示名和公开 alias 不同 |
 | DeepSeek V4 Pro | `deepseek-v4-pro` | OpenAI | `deepseek-v4-pro` | 否 | 返回名未变 |
 | DeepSeek V4 Flash | `deepseek-v4-flash` | OpenAI | `deepseek-v4-flash` | 否 | 返回名未变 |
-| DeepSeek V3.2 | `deepseek-v3-2` | OpenAI | `deepseek-v4-pro` | 是 | 公开 alias 保留 V3.2，实际上游落到 V4 Pro |
 | Gemini 3.1 Pro | `gemini-3.1-pro` | Gemini | `gemini-3.1-pro-preview` | 是 | 实际是 preview 版本 |
 | Gemini 3.1 Pro Thinking | `gemini-3.1-pro-thinking` | Gemini | `gemini-3.1-pro-preview` | 是 | thinking alias；代理会将 `parts[].thought` 映射到 `reasoning_content` |
 | Gemini 3 Flash | `gemini-3-flash` | Gemini | `gemini-3-flash-preview` | 是 | 实际是 preview 版本 |
 | Gemini 3 Flash Thinking | `gemini-3-flash-thinking` | Gemini | `gemini-3-flash-preview` | 是 | thinking alias；代理会将 `parts[].thought` 映射到 `reasoning_content` |
+| Gemini 3.5 Flash | `gemini-3.5-flash` | Gemini | `gemini-3.5-flash` | 否 | 新模型；`stream: true` 仍是代理层伪流式 |
+| Gemini 3.5 Flash Thinking | `gemini-3.5-flash-thinking` | Gemini | `gemini-3.5-flash` | 否 | thinking alias；代理会将 `parts[].thought` 映射到 `reasoning_content` |
 
 ## 额外说明
 
@@ -147,6 +149,7 @@ Claude / MiniMax 走 Anthropic 协议，`max_tokens` 必填。网关在用户未
 - `claude-sonnet-4-6` / `claude-sonnet-4-6-thinking`：`128000`
 - `claude-haiku-4-5` / `claude-haiku-4-5-thinking`：`64000`
 - MiniMax-M2.7：`131072`
+- MiniMax-M3 / MiniMax-M3-thinking：`131072`
 
 可用 `ANTHROPIC_DEFAULT_MAX_TOKENS` 覆盖 Anthropic 兼容分支的默认值。
 
@@ -167,15 +170,16 @@ Kimi / GPT / GLM / DeepSeek / Mimo 走 OpenAI 原生分支，用户未传时网�
 | Xiaomi MiMo V2.5 Pro | `mimo-v2-pro` |
 | Xiaomi MiMo V2.5 | `mimo-v2-omni` |
 | GPT 5.4 Mini | `gpt-5.4-mini` |
-| DeepSeek V3.2 | `deepseek-v3-2` |
 | MiniMax M2.7 | `MiniMax-M2.7` |
+| MiniMax M3 | `MiniMax-M3` |
+| Gemini 3.5 Flash | `gemini-3.5-flash` |
 
-### 7. 关于 MiniMax M2.7
+### 7. 关于 MiniMax
 
-这个模型比较特殊：
+MiniMax 模型比较特殊：
 
-- 客户端展示名是 **MiniMax M2.7**
-- 真正可用的代理 id 是 **`MiniMax-M2.7`**
+- 客户端展示名是 **MiniMax M2.7** / **MiniMax M3**
+- 真正可用的代理 id 是 **`MiniMax-M2.7`** / **`MiniMax-M3`** / **`MiniMax-M3-thinking`**
 - 必须保持这个大小写形式
 - 它走的是 **Anthropic 协议入口**，不是 OpenAI
 
@@ -186,19 +190,7 @@ Kimi / GPT / GLM / DeepSeek / Mimo 走 OpenAI 原生分支，用户未传时网�
 - `minimax`
 - `m2.7`
 
-### 8. 关于 DeepSeek V3.2
-
-客户端展示常写作 **DeepSeek V3.2**，但代理里应写：
-
-- `deepseek-v3-2`
-
-注意是连字符 `-`，不是小数点 `.`。
-
-而且它目前上游实际会落到：
-
-- `deepseek-v4-pro`
-
-### 9. 关于“是否真的是那个模型”
+### 8. 关于“是否真的是那个模型”
 
 这里的“真”分三种情况：
 
@@ -210,9 +202,7 @@ Kimi / GPT / GLM / DeepSeek / Mimo 走 OpenAI 原生分支，用户未传时网�
 
 3. **明显 alias 映射到别的模型**  
    例如：
-   - `glm-5.0` → `glm-5`
    - `kimi-k2.5` → `kimi-k2.6`
-   - `deepseek-v3-2` → `deepseek-v4-pro`
 
 ## 维护建议
 

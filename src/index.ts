@@ -84,6 +84,8 @@ function getAnthropicDefaultMaxTokens(c: Context, model: string): number {
     "claude-haiku-4-5": 64000,
     "claude-haiku-4-5-thinking": 64000,
     "minimax-m2.7": 131072,
+    "minimax-m3": 131072,
+    "minimax-m3-thinking": 131072,
   };
   if (exactDefaults[m] !== undefined) return exactDefaults[m];
   return 8192;
@@ -99,6 +101,8 @@ function getGeminiDefaultMaxTokens(c: Context, model: string): number {
     "gemini-3.1-pro-thinking": 65536,
     "gemini-3-flash": 65536,
     "gemini-3-flash-thinking": 65536,
+    "gemini-3.5-flash": 65536,
+    "gemini-3.5-flash-thinking": 65536,
   };
   if (exactDefaults[m] !== undefined) return exactDefaults[m];
   return 65536;
@@ -382,7 +386,6 @@ const HEALTH_CHECK_MODELS = [
   "mimo-v2-omni",
   "deepseek-v4-pro",
   "deepseek-v4-flash",
-  "deepseek-v3-2",
 ] as const;
 
 function pickHealthCheckModel(): string {
@@ -472,7 +475,6 @@ const MODELS = [
   { id: "gpt-5.4-mini-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.4-mini-thinking", parent: "gpt-5.4-mini" },
   { id: "gpt-5.5", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.5", parent: null },
   { id: "gpt-5.5-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.5-thinking", parent: "gpt-5.5" },
-  { id: "glm-5.0", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "glm-5.0", parent: null },
   { id: "glm-5.1", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "glm-5.1", parent: null },
   { id: "kimi-k2.6", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "kimi-k2.6", parent: null },
   { id: "kimi-k2.5", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "kimi-k2.5", parent: null },
@@ -480,12 +482,15 @@ const MODELS = [
   { id: "mimo-v2-omni", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "mimo-v2-omni", parent: null },
   { id: "deepseek-v4-pro", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "deepseek-v4-pro", parent: null },
   { id: "deepseek-v4-flash", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "deepseek-v4-flash", parent: null },
-  { id: "deepseek-v3-2", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "deepseek-v3-2", parent: null },
   { id: "gemini-3.1-pro", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3.1-pro", parent: null },
   { id: "gemini-3.1-pro-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3.1-pro-thinking", parent: "gemini-3.1-pro" },
   { id: "gemini-3-flash", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3-flash", parent: null },
   { id: "gemini-3-flash-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3-flash-thinking", parent: "gemini-3-flash" },
-  { id: "MiniMax-M2.7", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "MiniMax-M2.7", parent: null }
+  { id: "gemini-3.5-flash", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3.5-flash", parent: null },
+  { id: "gemini-3.5-flash-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3.5-flash-thinking", parent: "gemini-3.5-flash" },
+  { id: "MiniMax-M2.7", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "MiniMax-M2.7", parent: null },
+  { id: "MiniMax-M3", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "MiniMax-M3", parent: null },
+  { id: "MiniMax-M3-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "MiniMax-M3-thinking", parent: "MiniMax-M3" }
 ];
 
 // ========== Helpers ==========
@@ -495,18 +500,22 @@ function isClaudeModel(model: string): boolean {
 }
 
 function isAnthropicModel(model: string): boolean {
-  return isClaudeModel(model) || model === "MiniMax-M2.7";
+  return isClaudeModel(model) || model === "MiniMax-M2.7" || model === "MiniMax-M3" || model === "MiniMax-M3-thinking";
 }
 
 function isClaudeThinkingAlias(model: string): boolean {
   return typeof model === "string" && model.toLowerCase().startsWith("claude") && model.toLowerCase().endsWith("-thinking");
 }
 
+function isAnthropicThinkingAlias(model: string): boolean {
+  return isClaudeThinkingAlias(model) || model === "MiniMax-M3-thinking";
+}
+
 function getClaudeThinkingConfig(model: string): { publicModel: string; upstreamModel: string; thinking?: any; output_config?: any } {
   const publicModel = model;
-  const upstreamModel = isClaudeThinkingAlias(model) ? model.slice(0, -"-thinking".length) : model;
+  const upstreamModel = isAnthropicThinkingAlias(model) ? model.slice(0, -"-thinking".length) : model;
 
-  if (!isClaudeThinkingAlias(model)) {
+  if (!isAnthropicThinkingAlias(model)) {
     return { publicModel, upstreamModel };
   }
 
@@ -521,6 +530,12 @@ function getClaudeThinkingConfig(model: string): { publicModel: string; upstream
       };
     case "claude-opus-4-6":
     case "claude-sonnet-4-6":
+      return {
+        publicModel,
+        upstreamModel,
+        thinking: { type: "adaptive" },
+      };
+    case "MiniMax-M3":
       return {
         publicModel,
         upstreamModel,
