@@ -45,6 +45,8 @@
 | GPT 5.5 | `gpt-5.5` | OpenAI | `gpt-5.5-2026-04-24` | 否 | 新模型；需要 `max_completion_tokens` |
 | GPT 5.5 Thinking | `gpt-5.5-thinking` | OpenAI | `gpt-5.5-2026-04-24` | 否 | thinking alias；代理会映射到 `gpt-5.5` 并注入 `reasoning_effort: medium` |
 | GLM 5.1 | `glm-5.1` | OpenAI | `glm-5.1` | 否 | 返回名未变 |
+| GLM 5.2 | `glm-5.2` | OpenAI | `glm-5.2` | 否 | 新模型；原生返回 `reasoning_content`，不额外提供 thinking alias |
+| Kimi K2.7 Code | `kimi-k2.7-code` | OpenAI | `kimi-k2.7-code` | 否 | 新代码能力模型；原生返回 `reasoning_content`，不额外提供 thinking alias |
 | Kimi K2.6 | `kimi-k2.6` | OpenAI | `kimi-k2.6` | 否 | 返回名未变 |
 | Kimi K2.5 | `kimi-k2.5` | OpenAI | `kimi-k2.6` | 是 | 公开 alias 保留 K2.5，实际上游落到 K2.6 |
 | Xiaomi MiMo V2.5 Pro | `mimo-v2-pro` | OpenAI | `mimo-v2-pro` | 否 | 展示名和公开 alias 不同 |
@@ -170,6 +172,7 @@ Kimi / GPT / GLM / DeepSeek / Mimo 走 OpenAI 原生分支，用户未传时网�
 | Xiaomi MiMo V2.5 Pro | `mimo-v2-pro` |
 | Xiaomi MiMo V2.5 | `mimo-v2-omni` |
 | GPT 5.4 Mini | `gpt-5.4-mini` |
+| Kimi K2.7 Code | `kimi-k2.7-code` |
 | MiniMax M2.7 | `MiniMax-M2.7` |
 | MiniMax M3 | `MiniMax-M3` |
 | Gemini 3.5 Flash | `gemini-3.5-flash` |

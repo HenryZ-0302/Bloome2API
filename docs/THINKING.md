@@ -67,6 +67,8 @@
 当前已实测属于这类的模型包括：
 
 - `glm-5.1`
+- `glm-5.2`
+- `kimi-k2.7-code`
 - `kimi-k2.6`
 - `kimi-k2.5`
 - `deepseek-v4-pro`
@@ -139,7 +141,7 @@ thinkingConfig: {
 补充：
 
 - `gpt-5.5` 和 `gpt-5.4` 一样，属于需要 `max_completion_tokens` 的 reasoning 模型
-- `glm-5.1` / `kimi-k2.5` / `kimi-k2.6` / `deepseek-v4-pro` / `deepseek-v4-flash` 这类模型本身已经返回 `reasoning_content`，不建议再额外加 `-thinking`
+- `glm-5.1` / `glm-5.2` / `kimi-k2.7-code` / `kimi-k2.5` / `kimi-k2.6` / `deepseek-v4-pro` / `deepseek-v4-flash` 这类模型本身已经返回 `reasoning_content`，不建议再额外加 `-thinking`
 
 ## MiniMax 家族
 

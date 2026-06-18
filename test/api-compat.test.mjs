@@ -84,11 +84,13 @@ test("model catalog includes Claude Opus 4.8 with adaptive thinking", () => {
   assert.match(source, /PUBLIC_MODEL_OWNER/);
 });
 
-test("model catalog includes MiniMax M3 and Gemini 3.5 Flash", () => {
+test("model catalog includes latest discovered model aliases", () => {
   assert.match(source, /id: "MiniMax-M3"/);
   assert.match(source, /id: "MiniMax-M3-thinking"/);
   assert.match(source, /id: "gemini-3\.5-flash"/);
   assert.match(source, /id: "gemini-3\.5-flash-thinking"/);
+  assert.match(source, /id: "glm-5\.2"/);
+  assert.match(source, /id: "kimi-k2\.7-code"/);
   assert.match(source, /"minimax-m3": 131072/);
   assert.match(source, /"minimax-m3-thinking": 131072/);
   assert.match(source, /"gemini-3\.5-flash": 65536/);
@@ -103,14 +105,24 @@ test("model catalog includes MiniMax M3 and Gemini 3.5 Flash", () => {
   assert.match(modelsDoc, /Gemini 3\.5 Flash/);
   assert.match(modelsDoc, /`gemini-3\.5-flash`/);
   assert.match(modelsDoc, /`gemini-3\.5-flash-thinking`/);
+  assert.match(modelsDoc, /GLM 5\.2/);
+  assert.match(modelsDoc, /`glm-5\.2`/);
+  assert.match(modelsDoc, /Kimi K2\.7 Code/);
+  assert.match(modelsDoc, /`kimi-k2\.7-code`/);
   assert.match(thinkingDoc, /`MiniMax-M3-thinking`/);
   assert.match(thinkingDoc, /`gemini-3\.5-flash-thinking`/);
+  assert.match(thinkingDoc, /`glm-5\.2`/);
+  assert.match(thinkingDoc, /`kimi-k2\.7-code`/);
   assert.doesNotMatch(source, /id: "glm-5\.0"/);
   assert.doesNotMatch(source, /id: "deepseek-v3-2"/);
+  assert.doesNotMatch(source, /id: "glm-5\.2-thinking"/);
+  assert.doesNotMatch(source, /id: "kimi-k2\.7-code-thinking"/);
   assert.doesNotMatch(modelsDoc, /\| GLM 5\.0 \|/);
   assert.doesNotMatch(modelsDoc, /\| DeepSeek V3\.2 \|/);
   assert.doesNotMatch(thinkingDoc, /`glm-5\.0`/);
   assert.doesNotMatch(thinkingDoc, /`deepseek-v3-2`/);
+  assert.doesNotMatch(thinkingDoc, /`glm-5\.2-thinking`/);
+  assert.doesNotMatch(thinkingDoc, /`kimi-k2\.7-code-thinking`/);
 });
 
 test("translated Chat Completions handle developer messages and stream usage", () => {
