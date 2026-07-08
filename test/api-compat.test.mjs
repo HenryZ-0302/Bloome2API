@@ -254,7 +254,10 @@ test("deploy script supports hot deploy without var sync or pull", () => {
 });
 
 test("deploy docs require user-provided client key and copyable success report", () => {
-  assert.match(deployDoc, /CLIENT_API_KEY 必须由用户提供/);
+  assert.match(deployDoc, /只需要向用户询问 `CLIENT_API_KEY`/);
+  assert.match(deployDoc, /`PROVIDER_API_KEY` 默认使用 `RESON_LLM_API_KEY`/);
+  assert.match(deployDoc, /只有环境里没有 `RESON_LLM_API_KEY`/);
+  assert.doesNotMatch(deployDoc, /准备两个 key/);
   assert.match(deployDoc, /默认部署目标是公网 EdgeSpark 地址/);
   assert.match(deployDoc, /echo \$\{#RESON_LLM_API_KEY\}/);
   assert.match(deployDoc, /不要用 `head -c`/);
@@ -262,6 +265,8 @@ test("deploy docs require user-provided client key and copyable success report",
   assert.match(deployDoc, /未设置时不会写入 EdgeSpark VarKey/);
   assert.match(deployDoc, /项目名_日期/);
   assert.match(deployDoc, /newapi_\$\(date \+%Y%m%d\)/);
+  assert.match(deployDoc, /bloome edgespark project create --alias "\$ALIAS"/);
+  assert.doesNotMatch(deployDoc, /<cloud-cli> edgespark project create --alias "\$ALIAS"/);
   assert.match(deployDoc, /Base URL/);
   assert.match(deployDoc, /API Key/);
   assert.match(deployDoc, /各自单独放在代码块里/);
@@ -288,17 +293,22 @@ test("local deploy wrapper keeps secrets explicit and supports optional verifica
   assert.match(deployLocalScript, /EDGESPARK_SECRET_NAME/);
   assert.match(deployLocalScript, /RESON_LLM_API_KEY/);
   assert.match(deployLocalScript, /CLIENT_API_KEY/);
+  assert.match(deployLocalScript, /PROVIDER_KEY_FILE="\$\(mktemp/);
+  assert.match(deployLocalScript, /CLIENT_KEY_FILE="\$\(mktemp/);
+  assert.match(deployLocalScript, /trap cleanup EXIT/);
+  assert.match(deployLocalScript, /cat "\$PROVIDER_KEY_FILE"/);
+  assert.match(deployLocalScript, /cat "\$CLIENT_KEY_FILE"/);
+  assert.match(deployLocalScript, /printenv "\$SECRET_NAME"/);
   assert.match(deployLocalScript, /CLOUD_CMD/);
   assert.match(deployLocalScript, /command -v bloome/);
   assert.match(deployLocalScript, /command -v bloome-cli/);
   assert.match(deployLocalScript, /cloud CLI not found/);
-  assert.match(deployLocalScript, /export EDGESPARK_SECRET_NAME/);
   assert.match(deployLocalScript, /HOT_DEPLOY_ONLY/);
   assert.match(deployLocalScript, /BASE_URL/);
   assert.match(deployLocalScript, /require_cmd curl/);
   assert.match(deployLocalScript, /chat\/completions/);
   assert.match(deployLocalScript, /scripts\/deploy-edgespark\.sh/);
-  assert.match(deployLocalScript, /export PROVIDER_API_KEY="\$RESON_LLM_API_KEY"/);
+  assert.doesNotMatch(deployLocalScript, /export PROVIDER_API_KEY="\$RESON_LLM_API_KEY"/);
   assert.doesNotMatch(deployLocalScript, /require_cmd bloome/);
   assert.doesNotMatch(deployLocalScript, /1346792580a/);
   assert.doesNotMatch(deployLocalScript, /CLIENT_API_KEY=["'][^"$]/);
@@ -308,8 +318,9 @@ test("local deploy wrapper keeps secrets explicit and supports optional verifica
   assert.match(deployNotes, /都当成 deploy 前必须存在/);
   assert.match(deployNotes, /`secret call` 不透传外部环境变量/);
   assert.match(deployNotes, /不会继承外层的 `RESON_LLM_API_KEY` \/ `CLIENT_API_KEY`/);
-  assert.match(deployNotes, /不要继续折腾 heredoc 或多层 shell 引号/);
-  assert.match(deployNotes, /edgespark var set PROVIDER_API_KEY=/);
-  assert.match(deployNotes, /HOT_DEPLOY_ONLY=1 \.\/scripts\/deploy-edgespark\.sh/);
+  assert.match(deployNotes, /先把 key 写到 `\/tmp` 临时文件/);
+  assert.match(deployNotes, /`secret call` 里面再 `cat` 读取/);
+  assert.match(deployNotes, /部署结束会自动删除临时文件/);
+  assert.match(deployNotes, /`PROVIDER_API_KEY` 默认来自 `RESON_LLM_API_KEY`/);
   assert.match(deployNotes, /不要为了通过 deploy 去补空的 `PROVIDER_BASE_URL`/);
 });

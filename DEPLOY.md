@@ -6,18 +6,17 @@
 
 ## 0. 前置检查
 
-确认 Bun 可用，并准备两个 key：
+确认 Bun 可用。部署时只需要向用户询问 `CLIENT_API_KEY`。
 
-- `PROVIDER_API_KEY` 来自上游聚合模型 provider key
-- CLIENT_API_KEY 必须由用户提供；不要替用户随机生成，也不要写进仓库
+- `PROVIDER_API_KEY` 默认使用 `RESON_LLM_API_KEY`
+- 只有环境里没有 `RESON_LLM_API_KEY`，才停下来问上游 provider key
+- `CLIENT_API_KEY` 必须由用户提供；不要替用户随机生成，也不要写进仓库
 
 ```bash
 bun --version
 bun install
 
-echo $RESON_LLM_API_KEY
 echo ${#RESON_LLM_API_KEY}
-export PROVIDER_API_KEY="$RESON_LLM_API_KEY"
 export CLIENT_API_KEY="<用户给的客户端密码>"
 ```
 
@@ -95,13 +94,13 @@ newapi_20260526
 
 ```bash
 export ALIAS="newapi_$(date +%Y%m%d)"
-<cloud-cli> edgespark project create --alias "$ALIAS"
+bloome edgespark project create --alias "$ALIAS"
 ```
 
-如果当前环境只有备用 wrapper，用等价命令：
+如果当前环境只有备用 wrapper，用等价命令；重点是用 Bloome 控制平面创建，不是官方 `edgespark project create`：
 
 ```bash
-<cloud-cli-wrapper> edgespark project create --alias "$ALIAS"
+bloome-cli edgespark project create --alias "$ALIAS"
 ```
 
 ---
@@ -130,12 +129,12 @@ export ALIAS="newapi_$(date +%Y%m%d)"
 
 ## 5. 部署
 
+推荐用本地封装脚本，它会把 `RESON_LLM_API_KEY` 和 `CLIENT_API_KEY` 写入 `/tmp` 临时文件，再让 `secret call` 里面 `cat` 读取，避免 `secret call` 不继承外部环境变量。
+
 ```bash
-<cloud-cli> secret call EDGESPARK_API_KEY__<ALIAS>__<SUFFIX> -- bash -c '
-  export EDGESPARK_API_KEY="$EDGESPARK_API_KEY__<ALIAS>__<SUFFIX>";
-  export EDGESPARK_PROJECT_ENVIRONMENT=production;
-  ./scripts/deploy-edgespark.sh <alias>
-'
+export EDGESPARK_SECRET_NAME="EDGESPARK_API_KEY__<ALIAS>__<SUFFIX>"
+export CLIENT_API_KEY="<用户给的客户端密码>"
+./scripts/deploy-local.sh <alias>
 ```
 
 脚本会自动同步 `src/index.ts`、注入 EdgeSpark vars、安装 server 依赖并执行 `edgespark deploy`。
@@ -144,13 +143,13 @@ export ALIAS="newapi_$(date +%Y%m%d)"
 如果刚执行过第 4 节的 `edgespark pull` smoke test，可以跳过脚本内的重复 pull：
 
 ```bash
-SKIP_PULL=1 ./scripts/deploy-edgespark.sh <alias>
+SKIP_PULL=1 ./scripts/deploy-local.sh <alias>
 ```
 
 只改源码且不需要重新同步变量 / pull generated types 时，可以用热更新模式：
 
 ```bash
-HOT_DEPLOY_ONLY=1 ./scripts/deploy-edgespark.sh <alias>
+HOT_DEPLOY_ONLY=1 ./scripts/deploy-local.sh <alias>
 ```
 
 ---

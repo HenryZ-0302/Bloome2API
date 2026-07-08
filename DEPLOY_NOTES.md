@@ -52,7 +52,7 @@ Agent 环境可能只有一个云端 CLI 命令：
 
 ```bash
 <cloud-cli> secret call EDGESPARK_API_KEY__<ALIAS>__<SUFFIX> -- bash -c '...'
-<cloud-cli> edgespark project create --alias <alias>
+bloome edgespark project create --alias <alias>
 ```
 
 有备用 wrapper 时用等价命令。
@@ -73,27 +73,24 @@ Agent 环境可能只有一个云端 CLI 命令：
 
 ### `secret call` 不透传外部环境变量
 
-有些 Agent 环境里，`secret call` 子进程只注入被调用的 EdgeSpark secret，不会继承外层的 `RESON_LLM_API_KEY` / `CLIENT_API_KEY`。这种情况下不要继续折腾 heredoc 或多层 shell 引号，直接拆成两步：
+有些 Agent 环境里，`secret call` 子进程只注入被调用的 EdgeSpark secret，不会继承外层的 `RESON_LLM_API_KEY` / `CLIENT_API_KEY`。
 
-1. 先在 `secret call` 内完成 `edgespark var set`，显式设置必填 runtime vars：
+最稳的做法：先把 key 写到 `/tmp` 临时文件，`secret call` 里面再 `cat` 读取。部署结束会自动删除临时文件。
+
+直接用：
 
 ```bash
-<cloud-cli> secret call EDGESPARK_API_KEY__<ALIAS>__<SUFFIX> -- bash -c '
-  export EDGESPARK_API_KEY="$EDGESPARK_API_KEY__<ALIAS>__<SUFFIX>";
-  export EDGESPARK_PROJECT_ENVIRONMENT=production;
-  cd edgespark/<alias>;
-  edgespark var set PROVIDER_API_KEY="<完整 PROVIDER_API_KEY>" CLIENT_API_KEY="<用户给的客户端密码>"
-'
+export EDGESPARK_SECRET_NAME="EDGESPARK_API_KEY__<ALIAS>__<SUFFIX>"
+export CLIENT_API_KEY="<用户给的客户端密码>"
+./scripts/deploy-local.sh <alias>
 ```
 
-2. 再走热部署，只同步源码和 deploy，跳过 runtime var 同步：
+`PROVIDER_API_KEY` 默认来自 `RESON_LLM_API_KEY`。只有环境里没有 `RESON_LLM_API_KEY`，才需要停下来问上游 provider key。
+
+热更新同理：
 
 ```bash
-<cloud-cli> secret call EDGESPARK_API_KEY__<ALIAS>__<SUFFIX> -- bash -c '
-  export EDGESPARK_API_KEY="$EDGESPARK_API_KEY__<ALIAS>__<SUFFIX>";
-  export EDGESPARK_PROJECT_ENVIRONMENT=production;
-  HOT_DEPLOY_ONLY=1 ./scripts/deploy-edgespark.sh <alias>
-'
+HOT_DEPLOY_ONLY=1 ./scripts/deploy-local.sh <alias>
 ```
 
 只设置 `PROVIDER_API_KEY` 和 `CLIENT_API_KEY` 这两个必填项。不要为了通过 deploy 去补空的 `PROVIDER_BASE_URL`、`ANTHROPIC_DEFAULT_MAX_TOKENS`、`GEMINI_DEFAULT_MAX_TOKENS`、`APP_DEV_MODE`；当前脚本会按实际同步的变量动态生成 `VarKey`。
@@ -110,11 +107,11 @@ Agent 环境可能只有一个云端 CLI 命令：
 key 来源：
 
 ```bash
-echo $RESON_LLM_API_KEY
 echo ${#RESON_LLM_API_KEY}
-export PROVIDER_API_KEY="$RESON_LLM_API_KEY"
 export CLIENT_API_KEY="<用户给的客户端密码>"
 ```
+
+`PROVIDER_API_KEY` 默认使用环境里的 `RESON_LLM_API_KEY`。部署时不要打印原文，只确认长度。
 
 如果 `/chat/completions` 返回 `upstream_auth_error`，先检查 `PROVIDER_API_KEY` 是否被截断。部署脚本会输出 key 长度并拒绝明显过短的值；不要用 `head -c` 取 secret。
 
@@ -207,11 +204,11 @@ export EDGESPARK_PROJECT_DIR="/absolute/path/to/edgespark/<alias>"
 ### 本地 Agent 快捷部署
 
 可以用 `scripts/deploy-local.sh` 封装云端 secret call。这个脚本不会生成或硬编码 `CLIENT_API_KEY`，必须由用户明确提供。
+它会把 `RESON_LLM_API_KEY` 和 `CLIENT_API_KEY` 写到 `/tmp` 临时文件，让 `secret call` 内部读取，结束后自动删除。
 脚本会优先使用主 CLI，找不到时 fallback 到备用 CLI。
 
 ```bash
 export EDGESPARK_SECRET_NAME="EDGESPARK_API_KEY__<ALIAS>__<SUFFIX>"
-export RESON_LLM_API_KEY="$RESON_LLM_API_KEY"
 export CLIENT_API_KEY="<用户给的客户端密码>"
 
 ./scripts/deploy-local.sh <alias>
