@@ -125,6 +125,99 @@ test("model catalog includes latest discovered model aliases", () => {
   assert.doesNotMatch(thinkingDoc, /`kimi-k2\.7-code-thinking`/);
 });
 
+test("models docs record the official Bloome pricing catalog", () => {
+  const pricingStart = modelsDoc.indexOf("## Bloome 官方公开模型与基础单价");
+  const supportedStart = modelsDoc.indexOf("## 当前支持模型", pricingStart);
+  assert.ok(pricingStart > 0);
+  assert.ok(supportedStart > pricingStart);
+
+  const pricing = modelsDoc.slice(pricingStart, supportedStart);
+  assert.match(pricing, /2026-07-14/);
+  assert.match(pricing, /25 个模型/);
+  assert.match(pricing, /每 100 万 tokens/);
+
+  for (const modelName of [
+    "Claude Opus 4.8",
+    "Claude Opus 4.7",
+    "Claude Opus 4.6",
+    "Claude Sonnet 5",
+    "Claude Sonnet 4.6",
+    "Claude Haiku 4.5",
+    "GPT 5.6 Sol",
+    "GPT 5.6 Terra",
+    "GPT 5.6 Luna",
+    "GPT 5.5",
+    "Grok 4.5",
+    "GLM 5.2",
+    "GLM 5.1",
+    "Xiaomi MiMo V2.5 Pro",
+    "Xiaomi MiMo V2.5",
+    "DeepSeek V4 Pro",
+    "DeepSeek V4 Flash",
+    "Gemini 3.5 Flash",
+    "Gemini 3.1 Pro",
+    "Gemini 3 Flash",
+    "Kimi K2.7 Code",
+    "Kimi K2.6",
+    "Kimi K2.5",
+    "MiniMax M3",
+    "MiniMax M2.7",
+  ]) {
+    const escapedName = modelName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    assert.match(pricing, new RegExp(`\\| ${escapedName} \\|`));
+  }
+
+  assert.match(pricing, /\| GPT 5\.6 Sol \| 视觉 \| 272K \| \$5\.00 \| \$0\.50 \| \$30\.00 \|/);
+  assert.match(pricing, /\| Grok 4\.5 \| 视觉 \| 200K \| \$2\.00 \| \$0\.50 \| \$6\.00 \|/);
+  assert.match(pricing, /MiniMax M3.*>512K：输入 \$0\.60 \/ 输出 \$2\.40/s);
+  assert.match(pricing, /Xiaomi MiMo V2\.5 Pro.*>256K：输入 \$2\.10 \/ 输出 \$6\.30/s);
+});
+
+test("model catalog includes Sonnet 5, GPT 5.6 variants, and Grok 4.5", () => {
+  for (const modelId of [
+    "claude-sonnet-5",
+    "claude-sonnet-5-thinking",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna",
+    "grok-4.5",
+  ]) {
+    assert.match(source, new RegExp(`id: "${modelId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`));
+  }
+
+  assert.match(source, /"claude-sonnet-5": 128000/);
+  assert.match(source, /"claude-sonnet-5-thinking": 128000/);
+  assert.doesNotMatch(source, /id: "gpt-5\.6-(?:sol|terra|luna)-thinking"/);
+  assert.doesNotMatch(source, /id: "grok-4\.5-thinking"/);
+
+  const modelsStart = source.indexOf("const MODELS = [");
+  const helpersStart = source.indexOf("// ========== Helpers ==========", modelsStart);
+  assert.ok(modelsStart > 0);
+  assert.ok(helpersStart > modelsStart);
+  const modelCatalog = source.slice(modelsStart, helpersStart);
+  assert.equal([...modelCatalog.matchAll(/\{ id: "/g)].length, 40);
+
+  const thinkingStart = source.indexOf("function getClaudeThinkingConfig");
+  const googleStart = source.indexOf("function isGoogleModel", thinkingStart);
+  const thinkingSource = source.slice(thinkingStart, googleStart);
+  const sonnet5Start = thinkingSource.indexOf('case "claude-sonnet-5":');
+  const nextCase = thinkingSource.indexOf("case ", sonnet5Start + 1);
+  assert.ok(sonnet5Start > 0);
+  const sonnet5Config = thinkingSource.slice(sonnet5Start, nextCase);
+  assert.match(sonnet5Config, /thinking: \{ type: "adaptive" \}/);
+  assert.match(sonnet5Config, /output_config: \{ effort: "medium" \}/);
+
+  assert.match(modelsDoc, /\| Claude Sonnet 5 \| `claude-sonnet-5` \|/);
+  assert.match(modelsDoc, /\| Claude Sonnet 5 Thinking \| `claude-sonnet-5-thinking` \|/);
+  assert.match(modelsDoc, /\| GPT 5\.6 Sol \| `gpt-5\.6-sol` \|/);
+  assert.match(modelsDoc, /\| GPT 5\.6 Terra \| `gpt-5\.6-terra` \|/);
+  assert.match(modelsDoc, /\| GPT 5\.6 Luna \| `gpt-5\.6-luna` \|/);
+  assert.match(modelsDoc, /\| Grok 4\.5 \| `grok-4\.5` \|/);
+  assert.match(thinkingDoc, /`claude-sonnet-5-thinking`/);
+  assert.doesNotMatch(thinkingDoc, /`gpt-5\.6-sol-thinking`/);
+  assert.doesNotMatch(thinkingDoc, /`grok-4\.5-thinking`/);
+});
+
 test("translated Chat Completions handle developer messages and stream usage", () => {
   assert.match(source, /m\.role === "developer"/);
   assert.match(source, /wantsStreamUsage/);

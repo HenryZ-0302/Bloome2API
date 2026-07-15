@@ -40,6 +40,7 @@
 - `claude-opus-4-8-thinking`
 - `claude-opus-4-7-thinking`
 - `claude-opus-4-6-thinking`
+- `claude-sonnet-5-thinking`
 - `claude-sonnet-4-6-thinking`
 - `claude-haiku-4-5-thinking`
 - `MiniMax-M3-thinking`
@@ -73,6 +74,7 @@
 - `kimi-k2.5`
 - `deepseek-v4-pro`
 - `deepseek-v4-flash`
+- `grok-4.5`
 
 原因：
 
@@ -91,6 +93,7 @@
 - `claude-opus-4-8-thinking`
 - `claude-opus-4-7-thinking`
 - `claude-opus-4-6-thinking`
+- `claude-sonnet-5-thinking`
 - `claude-sonnet-4-6-thinking`
 - `claude-haiku-4-5-thinking`
 
@@ -137,6 +140,7 @@ thinkingConfig: {
 - GPT-5 官方 reasoning 更适合走 Responses API
 - Chat Completions 可能只能看到 reasoning token 计数，不一定返回可见 reasoning 文本
 - 如果未来需要可见 reasoning summary，再评估是否引入 Responses API 路径
+- GPT 5.6 Sol / Terra / Luna 的 `reasoning_effort` 实测差异很弱，因此暂不增加对应 `-thinking` alias
 
 补充：
 
@@ -165,6 +169,7 @@ thinkingConfig: {
 | `claude-opus-4-8` | 可用 | 不支持 | 支持 | 待继续补测 | 4.8 必须走 adaptive |
 | `claude-opus-4-7` | 可用 | 不支持 | 支持 | 待继续补测 | 4.7 必须走 adaptive |
 | `claude-opus-4-6` | 可用 | 支持 | 支持 | 已确认存在 | 最适合第一批实现 |
+| `claude-sonnet-5` | 可用 | 支持 | 支持 | 待继续补测 | 使用 adaptive + medium effort |
 | `claude-sonnet-4-6` | 可用 | 支持 | 支持 | 已确认存在 | 最适合第一批实现 |
 | `claude-haiku-4-5` | 可用 | 支持 | 不支持 | 已确认存在（enabled） | 只能走 enabled |
 
@@ -195,6 +200,19 @@ thinkingConfig: {
   "output_config": { "effort": "medium" }
 }
 ```
+
+### Claude Sonnet 5
+
+上游已经确认普通调用、tools、enabled thinking 和 adaptive thinking 均可用。NewAPI 的 thinking alias 使用：
+
+```json
+{
+  "thinking": { "type": "adaptive" },
+  "output_config": { "effort": "medium" }
+}
+```
+
+`claude-sonnet-5-thinking` 会映射回 `claude-sonnet-5`，并将 thinking block / thinking delta 统一映射到 `reasoning_content`。
 
 ### Claude Opus 4.6 / Sonnet 4.6
 
@@ -348,6 +366,7 @@ thinkingConfig: {
 - `claude-opus-4-8-thinking`
 - `claude-opus-4-7-thinking`
 - `claude-opus-4-6-thinking`
+- `claude-sonnet-5-thinking`
 - `claude-sonnet-4-6-thinking`
 - `claude-haiku-4-5-thinking`
 

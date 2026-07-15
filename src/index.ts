@@ -79,6 +79,8 @@ function getAnthropicDefaultMaxTokens(c: Context, model: string): number {
     "claude-opus-4-7-thinking": 128000,
     "claude-opus-4-6": 128000,
     "claude-opus-4-6-thinking": 128000,
+    "claude-sonnet-5": 128000,
+    "claude-sonnet-5-thinking": 128000,
     "claude-sonnet-4-6": 128000,
     "claude-sonnet-4-6-thinking": 128000,
     "claude-haiku-4-5": 64000,
@@ -465,6 +467,8 @@ const MODELS = [
   { id: "claude-opus-4-7-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-opus-4-7-thinking", parent: "claude-opus-4-7" },
   { id: "claude-opus-4-6", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-opus-4-6", parent: null },
   { id: "claude-opus-4-6-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-opus-4-6-thinking", parent: "claude-opus-4-6" },
+  { id: "claude-sonnet-5", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-sonnet-5", parent: null },
+  { id: "claude-sonnet-5-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-sonnet-5-thinking", parent: "claude-sonnet-5" },
   { id: "claude-sonnet-4-6", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-sonnet-4-6", parent: null },
   { id: "claude-sonnet-4-6-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-sonnet-4-6-thinking", parent: "claude-sonnet-4-6" },
   { id: "claude-haiku-4-5", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-haiku-4-5", parent: null },
@@ -473,8 +477,12 @@ const MODELS = [
   { id: "gpt-5.4-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.4-thinking", parent: "gpt-5.4" },
   { id: "gpt-5.4-mini", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.4-mini", parent: null },
   { id: "gpt-5.4-mini-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.4-mini-thinking", parent: "gpt-5.4-mini" },
+  { id: "gpt-5.6-sol", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.6-sol", parent: null },
+  { id: "gpt-5.6-terra", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.6-terra", parent: null },
+  { id: "gpt-5.6-luna", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.6-luna", parent: null },
   { id: "gpt-5.5", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.5", parent: null },
   { id: "gpt-5.5-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.5-thinking", parent: "gpt-5.5" },
+  { id: "grok-4.5", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "grok-4.5", parent: null },
   { id: "glm-5.1", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "glm-5.1", parent: null },
   { id: "glm-5.2", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "glm-5.2", parent: null },
   { id: "kimi-k2.6", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "kimi-k2.6", parent: null },
@@ -536,6 +544,13 @@ function getClaudeThinkingConfig(model: string): { publicModel: string; upstream
         publicModel,
         upstreamModel,
         thinking: { type: "adaptive" },
+      };
+    case "claude-sonnet-5":
+      return {
+        publicModel,
+        upstreamModel,
+        thinking: { type: "adaptive" },
+        output_config: { effort: "medium" },
       };
     case "MiniMax-M3":
       return {

@@ -21,6 +21,45 @@
 
 注意：`/models` 接口里的 `id` / `root` 继续保持公开调用名，不暴露实际上游模型。实际上游模型只用于文档、排障和模型探测记录。
 
+## Bloome 官方公开模型与基础单价
+
+以下是 **2026-07-14** 从 Bloome 官网公开页面整理的价格快照，共 **25 个模型**。
+
+- 计价单位：每 100 万 tokens
+- 价格列依次为输入、缓存读取、输出
+- 不包含账号额度或活动赠送
+- 实际扣费使用 Bloome 服务端计费表，官网价格后续可能变化
+- 这张表表示官方公开目录，**不代表模型已经加入 NewAPI 的 `/models`**
+- 缓存读取价格不等于所有协议入口都一定能产生缓存命中，实际效果仍以上游请求结果为准
+
+| 模型 | 类型 | 上下文 | 输入 | 缓存读取 | 输出 | 长上下文附加价格 |
+|---|---|---:|---:|---:|---:|---|
+| Claude Opus 4.8 | 视觉 | 1M | $5.00 | $0.50 | $25.00 | — |
+| Claude Opus 4.7 | 视觉 | 1M | $5.00 | $0.50 | $25.00 | — |
+| Claude Opus 4.6 | 视觉 | 1M | $5.00 | $0.50 | $25.00 | — |
+| Claude Sonnet 5 | 视觉 | 1M | $3.00 | $0.30 | $15.00 | — |
+| Claude Sonnet 4.6 | 视觉 | 1M | $3.00 | $0.30 | $15.00 | — |
+| Claude Haiku 4.5 | 视觉 | 200K | $1.00 | $0.10 | $5.00 | — |
+| GPT 5.6 Sol | 视觉 | 272K | $5.00 | $0.50 | $30.00 | — |
+| GPT 5.6 Terra | 视觉 | 272K | $2.50 | $0.25 | $15.00 | — |
+| GPT 5.6 Luna | 视觉 | 272K | $1.00 | $0.10 | $6.00 | — |
+| GPT 5.5 | 视觉 | 272K | $5.00 | $0.50 | $30.00 | — |
+| Grok 4.5 | 视觉 | 200K | $2.00 | $0.50 | $6.00 | — |
+| GLM 5.2 | 文本 | 1M | $1.40 | $0.26 | $4.40 | — |
+| GLM 5.1 | 文本 | 200K | $1.40 | $0.26 | $4.40 | — |
+| Xiaomi MiMo V2.5 Pro | 文本 | 1M | $1.05 | $0.21 | $3.15 | >256K：输入 $2.10 / 输出 $6.30 |
+| Xiaomi MiMo V2.5 | 视觉 | 1M | $0.42 | $0.08 | $2.10 | >256K：输入 $0.84 / 输出 $4.20 |
+| DeepSeek V4 Pro | 文本 | 1M | $1.77 | $0.015 | $3.53 | — |
+| DeepSeek V4 Flash | 文本 | 1M | $0.147 | $0.003 | $0.294 | — |
+| Gemini 3.5 Flash | 视觉 | 1M | $1.50 | $0.15 | $9.00 | — |
+| Gemini 3.1 Pro | 视觉 | 1M | $2.00 | $0.20 | $12.00 | >200K：输入 $4.00 / 输出 $18.00 |
+| Gemini 3 Flash | 视觉 | 1M | $0.50 | $0.05 | $3.00 | — |
+| Kimi K2.7 Code | 视觉 | 262K | $0.95 | $0.19 | $4.00 | — |
+| Kimi K2.6 | 视觉 | 262K | $0.95 | $0.16 | $4.00 | — |
+| Kimi K2.5 | 视觉 | 262K | $0.60 | $0.10 | $3.00 | — |
+| MiniMax M3 | 视觉 | 1M | $0.30 | $0.06 | $1.20 | >512K：输入 $0.60 / 输出 $2.40 |
+| MiniMax M2.7 | 文本 | 200K | $0.30 | $0.06 | $1.20 | — |
+
 ## 当前支持模型
 
 | 展示名 | 公开调用名（alias） | 协议入口 | 实际上游模型 | 重定向/套壳 | 备注 |
@@ -28,6 +67,8 @@
 | Claude Opus 4.8 | `claude-opus-4-8` | Anthropic | `claude-opus-4-8` | 否 | 返回名未变 |
 | Claude Opus 4.7 | `claude-opus-4-7` | Anthropic | `claude-opus-4-7` | 否 | 返回名未变 |
 | Claude Opus 4.6 | `claude-opus-4-6` | Anthropic | `claude-opus-4-6` | 否 | 返回名未变 |
+| Claude Sonnet 5 | `claude-sonnet-5` | Anthropic | `claude-sonnet-5` | 否 | 上游已实测可用 |
+| Claude Sonnet 5 Thinking | `claude-sonnet-5-thinking` | Anthropic | `claude-sonnet-5` | 否 | thinking alias；注入 adaptive thinking 与 medium effort |
 | Claude Sonnet 4.6 | `claude-sonnet-4-6` | Anthropic | `claude-sonnet-4-6` | 否 | 返回名未变 |
 | Claude Haiku 4.5 | `claude-haiku-4-5` | Anthropic | `claude-haiku-4-5-20251001` | 否 | 返回为带日期后缀的具体版本 |
 | Claude Opus 4.8 Thinking | `claude-opus-4-8-thinking` | Anthropic | `claude-opus-4-8` | 否 | thinking alias；走 adaptive thinking；代理会提取 `thinking` / `thinking_delta` 映射到 `reasoning_content` |
@@ -42,8 +83,12 @@
 | GPT 5.4 Thinking | `gpt-5.4-thinking` | OpenAI | `gpt-5.4-2026-03-05` | 否 | thinking alias；代理会映射到 `gpt-5.4` 并注入 `reasoning_effort: medium` |
 | GPT 5.4 Mini | `gpt-5.4-mini` | OpenAI | `gpt-5.4-mini-2026-03-17` | 否 | 返回为带日期后缀的具体版本 |
 | GPT 5.4 Mini Thinking | `gpt-5.4-mini-thinking` | OpenAI | `gpt-5.4-mini-2026-03-17` | 否 | thinking alias；代理会映射到 `gpt-5.4-mini` 并注入 `reasoning_effort: medium` |
+| GPT 5.6 Sol | `gpt-5.6-sol` | OpenAI | `gpt-5.6-sol-2026-07-09` | 否 | 原生提供 reasoning token 统计；不增加 thinking alias |
+| GPT 5.6 Terra | `gpt-5.6-terra` | OpenAI | `gpt-5.6-terra-2026-07-09` | 否 | 原生提供 reasoning token 统计；不增加 thinking alias |
+| GPT 5.6 Luna | `gpt-5.6-luna` | OpenAI | `gpt-5.6-luna-2026-07-09` | 否 | 原生提供 reasoning token 统计；不增加 thinking alias |
 | GPT 5.5 | `gpt-5.5` | OpenAI | `gpt-5.5-2026-04-24` | 否 | 新模型；需要 `max_completion_tokens` |
 | GPT 5.5 Thinking | `gpt-5.5-thinking` | OpenAI | `gpt-5.5-2026-04-24` | 否 | thinking alias；代理会映射到 `gpt-5.5` 并注入 `reasoning_effort: medium` |
+| Grok 4.5 | `grok-4.5` | OpenAI | `grok-4.5` | 否 | 原生返回 `reasoning_content`；effort 效果不稳定，不增加 thinking alias |
 | GLM 5.1 | `glm-5.1` | OpenAI | `glm-5.1` | 否 | 返回名未变 |
 | GLM 5.2 | `glm-5.2` | OpenAI | `glm-5.2` | 否 | 新模型；原生返回 `reasoning_content`，不额外提供 thinking alias |
 | Kimi K2.7 Code | `kimi-k2.7-code` | OpenAI | `kimi-k2.7-code` | 否 | 新代码能力模型；原生返回 `reasoning_content`，不额外提供 thinking alias |
@@ -148,6 +193,7 @@ Claude / MiniMax 走 Anthropic 协议，`max_tokens` 必填。网关在用户未
 - `claude-opus-4-8` / `claude-opus-4-8-thinking`：`128000`
 - `claude-opus-4-7` / `claude-opus-4-7-thinking`：`128000`
 - `claude-opus-4-6` / `claude-opus-4-6-thinking`：`128000`
+- `claude-sonnet-5` / `claude-sonnet-5-thinking`：`128000`
 - `claude-sonnet-4-6` / `claude-sonnet-4-6-thinking`：`128000`
 - `claude-haiku-4-5` / `claude-haiku-4-5-thinking`：`64000`
 - MiniMax-M2.7：`131072`
@@ -157,7 +203,7 @@ Claude / MiniMax 走 Anthropic 协议，`max_tokens` 必填。网关在用户未
 
 Gemini 走 Vertex 协议。网关在用户未传时默认补 `generationConfig.maxOutputTokens = 65536`，可用 `GEMINI_DEFAULT_MAX_TOKENS` 覆盖。Gemini 的 `stream: true` 是代理层伪流式：上游仍调用非流式 `generateContent`，代理拿到完整结果后再拆成 OpenAI SSE chunk 返回。
 
-OpenAI 分支里，GPT-5.5 也和 GPT-5.4 一样要求 `max_completion_tokens`，网关会自动从 `max_tokens` 转换。
+OpenAI 分支里，GPT-5.x 系列要求 `max_completion_tokens`，网关会自动从 `max_tokens` 转换。
 
 Kimi / GPT / GLM / DeepSeek / Mimo 走 OpenAI 原生分支，用户未传时网关不主动补输出上限。
 
