@@ -204,7 +204,7 @@ test("model catalog includes Sonnet 5, GPT 5.6 variants, and Grok 4.5", () => {
   const nextCase = thinkingSource.indexOf("case ", sonnet5Start + 1);
   assert.ok(sonnet5Start > 0);
   const sonnet5Config = thinkingSource.slice(sonnet5Start, nextCase);
-  assert.match(sonnet5Config, /thinking: \{ type: "adaptive" \}/);
+  assert.match(sonnet5Config, /thinking: \{ type: "adaptive", display: "summarized" \}/);
   assert.match(sonnet5Config, /output_config: \{ effort: "medium" \}/);
 
   assert.match(modelsDoc, /\| Claude Sonnet 5 \| `claude-sonnet-5` \|/);

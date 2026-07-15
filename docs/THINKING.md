@@ -169,7 +169,7 @@ thinkingConfig: {
 | `claude-opus-4-8` | 可用 | 不支持 | 支持 | 待继续补测 | 4.8 必须走 adaptive |
 | `claude-opus-4-7` | 可用 | 不支持 | 支持 | 待继续补测 | 4.7 必须走 adaptive |
 | `claude-opus-4-6` | 可用 | 支持 | 支持 | 已确认存在 | 最适合第一批实现 |
-| `claude-sonnet-5` | 可用 | 支持 | 支持 | 待继续补测 | 使用 adaptive + medium effort |
+| `claude-sonnet-5` | 可用 | 不支持 | 支持 | 已确认存在 | 使用 adaptive summarized + medium effort |
 | `claude-sonnet-4-6` | 可用 | 支持 | 支持 | 已确认存在 | 最适合第一批实现 |
 | `claude-haiku-4-5` | 可用 | 支持 | 不支持 | 已确认存在（enabled） | 只能走 enabled |
 
@@ -207,10 +207,12 @@ thinkingConfig: {
 
 ```json
 {
-  "thinking": { "type": "adaptive" },
+  "thinking": { "type": "adaptive", "display": "summarized" },
   "output_config": { "effort": "medium" }
 }
 ```
+
+不带 `display: "summarized"` 时，当前上游可能只返回空的 thinking block 和 signature。加入该字段后，非流式 thinking 文本和流式 thinking delta 均已确认存在。
 
 `claude-sonnet-5-thinking` 会映射回 `claude-sonnet-5`，并将 thinking block / thinking delta 统一映射到 `reasoning_content`。
 

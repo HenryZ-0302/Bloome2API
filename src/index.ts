@@ -549,7 +549,7 @@ function getClaudeThinkingConfig(model: string): { publicModel: string; upstream
       return {
         publicModel,
         upstreamModel,
-        thinking: { type: "adaptive" },
+        thinking: { type: "adaptive", display: "summarized" },
         output_config: { effort: "medium" },
       };
     case "MiniMax-M3":

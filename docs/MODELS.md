@@ -68,7 +68,7 @@
 | Claude Opus 4.7 | `claude-opus-4-7` | Anthropic | `claude-opus-4-7` | 否 | 返回名未变 |
 | Claude Opus 4.6 | `claude-opus-4-6` | Anthropic | `claude-opus-4-6` | 否 | 返回名未变 |
 | Claude Sonnet 5 | `claude-sonnet-5` | Anthropic | `claude-sonnet-5` | 否 | 上游已实测可用 |
-| Claude Sonnet 5 Thinking | `claude-sonnet-5-thinking` | Anthropic | `claude-sonnet-5` | 否 | thinking alias；注入 adaptive thinking 与 medium effort |
+| Claude Sonnet 5 Thinking | `claude-sonnet-5-thinking` | Anthropic | `claude-sonnet-5` | 否 | thinking alias；注入 adaptive summarized thinking 与 medium effort |
 | Claude Sonnet 4.6 | `claude-sonnet-4-6` | Anthropic | `claude-sonnet-4-6` | 否 | 返回名未变 |
 | Claude Haiku 4.5 | `claude-haiku-4-5` | Anthropic | `claude-haiku-4-5-20251001` | 否 | 返回为带日期后缀的具体版本 |
 | Claude Opus 4.8 Thinking | `claude-opus-4-8-thinking` | Anthropic | `claude-opus-4-8` | 否 | thinking alias；走 adaptive thinking；代理会提取 `thinking` / `thinking_delta` 映射到 `reasoning_content` |
