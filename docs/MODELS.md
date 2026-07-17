@@ -65,7 +65,7 @@
 
 - Bloome 官方目录新增了 **Kimi K3**。上游已确认真实 alias 为 `kimi-k3`，现已加入 NewAPI `/models`。
 - NewAPI 仍保留 **GPT 5.4** 和 **GPT 5.4 Mini**，但它们已不在这份 Bloome 官方展示目录中。
-- `*-thinking` 是 NewAPI 内部兼容 alias，不是 Bloome 官网单独展示的基础模型，因此不按“已下架模型”计算。
+- Claude 和 MiniMax 的 `*-thinking` 是 NewAPI 内部兼容 alias，不是 Bloome 官网单独展示的基础模型，因此不按“已下架模型”计算。
 
 ## 当前支持模型
 
@@ -87,14 +87,11 @@
 | MiniMax M3 | `MiniMax-M3` | Anthropic | `MiniMax-M3` | 否 | 新模型；注意大小写敏感 |
 | MiniMax M3 Thinking | `MiniMax-M3-thinking` | Anthropic | `MiniMax-M3` | 否 | thinking alias；走 `adaptive` thinking；注意大小写敏感 |
 | GPT 5.4 | `gpt-5.4` | OpenAI | `gpt-5.4-2026-03-05` | 否 | 返回为带日期后缀的具体版本 |
-| GPT 5.4 Thinking | `gpt-5.4-thinking` | OpenAI | `gpt-5.4-2026-03-05` | 否 | thinking alias；代理会映射到 `gpt-5.4` 并注入 `reasoning_effort: medium` |
 | GPT 5.4 Mini | `gpt-5.4-mini` | OpenAI | `gpt-5.4-mini-2026-03-17` | 否 | 返回为带日期后缀的具体版本 |
-| GPT 5.4 Mini Thinking | `gpt-5.4-mini-thinking` | OpenAI | `gpt-5.4-mini-2026-03-17` | 否 | thinking alias；代理会映射到 `gpt-5.4-mini` 并注入 `reasoning_effort: medium` |
 | GPT 5.6 Sol | `gpt-5.6-sol` | OpenAI | `gpt-5.6-sol-2026-07-09` | 否 | 原生提供 reasoning token 统计；不增加 thinking alias |
 | GPT 5.6 Terra | `gpt-5.6-terra` | OpenAI | `gpt-5.6-terra-2026-07-09` | 否 | 原生提供 reasoning token 统计；不增加 thinking alias |
 | GPT 5.6 Luna | `gpt-5.6-luna` | OpenAI | `gpt-5.6-luna-2026-07-09` | 否 | 原生提供 reasoning token 统计；不增加 thinking alias |
 | GPT 5.5 | `gpt-5.5` | OpenAI | `gpt-5.5-2026-04-24` | 否 | 新模型；需要 `max_completion_tokens` |
-| GPT 5.5 Thinking | `gpt-5.5-thinking` | OpenAI | `gpt-5.5-2026-04-24` | 否 | thinking alias；代理会映射到 `gpt-5.5` 并注入 `reasoning_effort: medium` |
 | Grok 4.5 | `grok-4.5` | OpenAI | `grok-4.5` | 否 | 原生返回 `reasoning_content`；effort 效果不稳定，不增加 thinking alias |
 | GLM 5.1 | `glm-5.1` | OpenAI | `glm-5.1` | 否 | 返回名未变 |
 | GLM 5.2 | `glm-5.2` | OpenAI | `glm-5.2` | 否 | 新模型；原生返回 `reasoning_content`，不额外提供 thinking alias |
@@ -107,11 +104,8 @@
 | DeepSeek V4 Pro | `deepseek-v4-pro` | OpenAI | `deepseek-v4-pro` | 否 | 返回名未变 |
 | DeepSeek V4 Flash | `deepseek-v4-flash` | OpenAI | `deepseek-v4-flash` | 否 | 返回名未变 |
 | Gemini 3.1 Pro | `gemini-3.1-pro` | Gemini | `gemini-3.1-pro-preview` | 是 | 实际是 preview 版本 |
-| Gemini 3.1 Pro Thinking | `gemini-3.1-pro-thinking` | Gemini | `gemini-3.1-pro-preview` | 是 | thinking alias；代理会将 `parts[].thought` 映射到 `reasoning_content` |
 | Gemini 3 Flash | `gemini-3-flash` | Gemini | `gemini-3-flash-preview` | 是 | 实际是 preview 版本 |
-| Gemini 3 Flash Thinking | `gemini-3-flash-thinking` | Gemini | `gemini-3-flash-preview` | 是 | thinking alias；代理会将 `parts[].thought` 映射到 `reasoning_content` |
 | Gemini 3.5 Flash | `gemini-3.5-flash` | Gemini | `gemini-3.5-flash` | 否 | 新模型；`stream: true` 仍是代理层伪流式 |
-| Gemini 3.5 Flash Thinking | `gemini-3.5-flash-thinking` | Gemini | `gemini-3.5-flash` | 否 | thinking alias；代理会将 `parts[].thought` 映射到 `reasoning_content` |
 
 ## 额外说明
 

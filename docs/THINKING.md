@@ -33,9 +33,9 @@
 - 无意增加 token 成本
 - 改变已有客户端的体验预期
 
-## 2. 用 `-thinking` 后缀表示显式开启思考模式
+## 2. 只为 Claude 和 MiniMax 保留 `-thinking` 后缀
 
-对于“默认不返回思考，但可以通过官方参数开启思考模式”的模型，新增一个显式 alias：
+只保留已经实测能明显返回可见思考内容的 alias：
 
 - `claude-opus-4-8-thinking`
 - `claude-opus-4-7-thinking`
@@ -44,22 +44,12 @@
 - `claude-sonnet-4-6-thinking`
 - `claude-haiku-4-5-thinking`
 - `MiniMax-M3-thinking`
-- `gemini-3.1-pro-thinking`
-- `gemini-3-flash-thinking`
-- `gemini-3.5-flash-thinking`
-- `gpt-5.4-thinking`
-- `gpt-5.4-mini-thinking`
-- `gpt-5.5-thinking`
 
 语义固定为：
 
 > 代理会为该模型启用官方支持的 thinking / reasoning 模式，并在上游返回可见思考内容时，将其映射到统一输出结构中。
 
-注意：
-
-- `-thinking` 表示“显式尝试开启思考模式”
-- **不保证**上游一定返回可见思考文本
-- 是否最终可见，取决于官方能力 + 实际上游网关是否透传
+GPT 和 Gemini 的 `-thinking` alias 已删除。它们的实测区别不明显，客户端需要推理强度时应直接使用基础模型支持的原生参数。
 
 ## 3. 不给天然就是 reasoning 输出的模型重复加 `-thinking`
 
@@ -85,11 +75,11 @@
 
 只有在未来确认“普通 alias 不返回 reasoning，而 `-thinking` alias 会返回更多 reasoning 信息”时，才考虑为这类模型增加额外 thinking alias。
 
-## 当前建议的 `-thinking` 适用范围
+## 当前 `-thinking` 适用范围
 
-## 第一批：优先实现 Claude 家族
+## Claude 家族
 
-建议优先支持：
+当前支持：
 
 - `claude-opus-4-8-thinking`
 - `claude-opus-4-7-thinking`
@@ -103,50 +93,6 @@
 - 官方 thinking 机制最清晰
 - Anthropic 流式事件格式清楚
 - 目前实测已经确认多个 Claude 模型能返回 `thinking` / `thinking_delta`
-
-## 第二批：Gemini 家族
-
-当前已实现：
-
-- `gemini-3.1-pro-thinking`
-- `gemini-3-flash-thinking`
-- `gemini-3.5-flash-thinking`
-
-前提是确认上游在启用：
-
-```json
-thinkingConfig: {
-  includeThoughts: true
-}
-```
-
-后，确实会返回 `parts[].thought`。
-
-## 第三批：GPT-5 家族
-
-当前已实现：
-
-- `gpt-5.4-thinking`
-- `gpt-5.4-mini-thinking`
-- `gpt-5.5-thinking`
-
-实现方式：
-
-- 对外保留 `-thinking` alias
-- 上游请求映射回普通模型：`gpt-5.4` / `gpt-5.4-mini` / `gpt-5.5`
-- 代理注入 `reasoning_effort: "medium"`
-
-注意：
-
-- GPT-5 官方 reasoning 更适合走 Responses API
-- Chat Completions 可能只能看到 reasoning token 计数，不一定返回可见 reasoning 文本
-- 如果未来需要可见 reasoning summary，再评估是否引入 Responses API 路径
-- GPT 5.6 Sol / Terra / Luna 的 `reasoning_effort` 实测差异很弱，因此暂不增加对应 `-thinking` alias
-
-补充：
-
-- `gpt-5.5` 和 `gpt-5.4` 一样，属于需要 `max_completion_tokens` 的 reasoning 模型
-- `glm-5.1` / `glm-5.2` / `kimi-k3` / `kimi-k2.7-code` / `kimi-k2.5` / `kimi-k2.6` / `deepseek-v4-pro` / `deepseek-v4-flash` 这类模型本身已经返回 `reasoning_content`，不建议再额外加 `-thinking`
 
 ## MiniMax 家族
 

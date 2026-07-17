@@ -100,11 +100,8 @@ function getGeminiDefaultMaxTokens(c: Context, model: string): number {
   const m = String(model || "").toLowerCase();
   const exactDefaults: Record<string, number> = {
     "gemini-3.1-pro": 65536,
-    "gemini-3.1-pro-thinking": 65536,
     "gemini-3-flash": 65536,
-    "gemini-3-flash-thinking": 65536,
     "gemini-3.5-flash": 65536,
-    "gemini-3.5-flash-thinking": 65536,
   };
   if (exactDefaults[m] !== undefined) return exactDefaults[m];
   return 65536;
@@ -474,14 +471,11 @@ const MODELS = [
   { id: "claude-haiku-4-5", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-haiku-4-5", parent: null },
   { id: "claude-haiku-4-5-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "claude-haiku-4-5-thinking", parent: "claude-haiku-4-5" },
   { id: "gpt-5.4", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.4", parent: null },
-  { id: "gpt-5.4-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.4-thinking", parent: "gpt-5.4" },
   { id: "gpt-5.4-mini", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.4-mini", parent: null },
-  { id: "gpt-5.4-mini-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.4-mini-thinking", parent: "gpt-5.4-mini" },
   { id: "gpt-5.6-sol", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.6-sol", parent: null },
   { id: "gpt-5.6-terra", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.6-terra", parent: null },
   { id: "gpt-5.6-luna", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.6-luna", parent: null },
   { id: "gpt-5.5", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.5", parent: null },
-  { id: "gpt-5.5-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gpt-5.5-thinking", parent: "gpt-5.5" },
   { id: "grok-4.5", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "grok-4.5", parent: null },
   { id: "glm-5.1", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "glm-5.1", parent: null },
   { id: "glm-5.2", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "glm-5.2", parent: null },
@@ -494,11 +488,8 @@ const MODELS = [
   { id: "deepseek-v4-pro", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "deepseek-v4-pro", parent: null },
   { id: "deepseek-v4-flash", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "deepseek-v4-flash", parent: null },
   { id: "gemini-3.1-pro", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3.1-pro", parent: null },
-  { id: "gemini-3.1-pro-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3.1-pro-thinking", parent: "gemini-3.1-pro" },
   { id: "gemini-3-flash", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3-flash", parent: null },
-  { id: "gemini-3-flash-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3-flash-thinking", parent: "gemini-3-flash" },
   { id: "gemini-3.5-flash", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3.5-flash", parent: null },
-  { id: "gemini-3.5-flash-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "gemini-3.5-flash-thinking", parent: "gemini-3.5-flash" },
   { id: "MiniMax-M2.7", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "MiniMax-M2.7", parent: null },
   { id: "MiniMax-M3", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "MiniMax-M3", parent: null },
   { id: "MiniMax-M3-thinking", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "MiniMax-M3-thinking", parent: "MiniMax-M3" }
@@ -575,24 +566,8 @@ function isGoogleModel(model: string): boolean {
   return typeof model === "string" && model.toLowerCase().startsWith("gemini");
 }
 
-function isGoogleThinkingAlias(model: string): boolean {
-  return typeof model === "string" && model.toLowerCase().startsWith("gemini") && model.toLowerCase().endsWith("-thinking");
-}
-
-function getGoogleThinkingConfig(model: string): { publicModel: string; upstreamModel: string; includeThoughts: boolean } {
-  const publicModel = model;
-  const upstreamModel = isGoogleThinkingAlias(model) ? model.slice(0, -"-thinking".length) : model;
-  return { publicModel, upstreamModel, includeThoughts: isGoogleThinkingAlias(model) };
-}
-
-function isGPTThinkingAlias(model: string): boolean {
-  return typeof model === "string" && model.toLowerCase().startsWith("gpt-5") && model.toLowerCase().endsWith("-thinking");
-}
-
-function getGPTThinkingConfig(model: string): { publicModel: string; upstreamModel: string; reasoningEffort?: string } {
-  const publicModel = model;
-  const upstreamModel = isGPTThinkingAlias(model) ? model.slice(0, -"-thinking".length) : model;
-  return { publicModel, upstreamModel, reasoningEffort: isGPTThinkingAlias(model) ? "medium" : undefined };
+function getGoogleModelConfig(model: string): { publicModel: string; upstreamModel: string } {
+  return { publicModel: model, upstreamModel: model };
 }
 
 function mapOpenAIToGoogleToolConfig(toolChoice: any): any {
@@ -1156,13 +1131,9 @@ function cleanAnthropicSSELine(line: string, publicModel: string, requestId: str
 // ========== Google Gemini (Vertex) conversion ==========
 
 function openaiToGoogleRequest(body: any, defaultMaxTokens: number): any {
-  const googleCfg = getGoogleThinkingConfig(body.model || "");
   const out: any = { contents: [], generationConfig: {} };
   const systemParts: any[] = [];
   const toolCallNames = collectToolCallNames(body.messages || []);
-  if (googleCfg.includeThoughts) {
-    out.generationConfig.thinkingConfig = { includeThoughts: true };
-  }
   if (body.temperature !== undefined) out.generationConfig.temperature = body.temperature;
   if (body.top_p !== undefined) out.generationConfig.topP = body.top_p;
   out.generationConfig.maxOutputTokens = body.max_tokens ?? body.max_completion_tokens ?? defaultMaxTokens;
@@ -2536,7 +2507,7 @@ app.post(`${API_PREFIX}/chat/completions`, async (c) => {
 
   // ===== Branch 3: Google (Gemini via Vertex) =====
   if (isGoogleModel(body.model)) {
-    const googleCfg = getGoogleThinkingConfig(body.model);
+    const googleCfg = getGoogleModelConfig(body.model);
     const defaultMaxTokens = getGeminiDefaultMaxTokens(c, body.model);
     const googleBody = openaiToGoogleRequest(body, defaultMaxTokens);
     const upstreamHeaders: Record<string, string> = {
@@ -2593,21 +2564,10 @@ app.post(`${API_PREFIX}/chat/completions`, async (c) => {
   }
 
   // ===== Branch 2: OpenAI native upstream (Kimi / GPT) =====
-  const gptThinkingCfg = getGPTThinkingConfig(body.model);
+  const publicModel = body.model;
   // gpt-5.5 specifically rejects reasoning_effort + tools combo in /v1/chat/completions
-  // (gpt-5.4 / 5.4-mini and other models accept this combo fine, no special-casing needed there).
-  // Narrow check: only affect when actual function tools are registered, not just tool_choice sentinel
-  // or empty tools array (some SDKs always include these fields).
-  const isGpt55Thinking = body.model === "gpt-5.5-thinking";
   const hasRealTools = Array.isArray(body.tools) && body.tools.length > 0;
-  const skipReasoningEffortInjection = isGpt55Thinking && hasRealTools;
-  if (gptThinkingCfg.reasoningEffort && body.reasoning_effort === undefined && !skipReasoningEffortInjection) {
-    body.reasoning_effort = gptThinkingCfg.reasoningEffort;
-  }
-  if (gptThinkingCfg.upstreamModel !== body.model) {
-    body.model = gptThinkingCfg.upstreamModel;
-  }
-  // Even when reasoning_effort came from the client (not injected), strip it for gpt-5.5 + real tools.
+  // Strip client-supplied reasoning_effort for gpt-5.5 + real tools because this upstream rejects the combination.
   if (body.reasoning_effort !== undefined && hasRealTools && String(body.model).toLowerCase() === "gpt-5.5") {
     delete body.reasoning_effort;
   }
@@ -2632,7 +2592,7 @@ app.post(`${API_PREFIX}/chat/completions`, async (c) => {
       const mapped = classifyUpstreamStatus(resp.status, data);
       return jsonError(c, mapped.status, mapped.type, data);
     }
-    return c.json(cleanChatCompletion(data, gptThinkingCfg.publicModel), resp.status as any);
+    return c.json(cleanChatCompletion(data, publicModel), resp.status as any);
   }
 
   return streamSSE(c, async (stream) => {
@@ -2669,7 +2629,7 @@ app.post(`${API_PREFIX}/chat/completions`, async (c) => {
           const line = buffer.slice(0, nl);
           buffer = buffer.slice(nl + 1);
           if (line.trim()) {
-            const r = cleanSSEDataLine(line.trim(), gptThinkingCfg.publicModel, getRequestId(c), isDeveloperMode(c));
+            const r = cleanSSEDataLine(line.trim(), publicModel, getRequestId(c), isDeveloperMode(c));
             if (r.line === "data: [DONE]") sawDone = true;
             if (r.line !== null) await stream.write(r.line + "\n");
           } else {
@@ -2678,7 +2638,7 @@ app.post(`${API_PREFIX}/chat/completions`, async (c) => {
         }
       }
       if (buffer.trim()) {
-        const r = cleanSSEDataLine(buffer.trim(), gptThinkingCfg.publicModel, getRequestId(c), isDeveloperMode(c));
+        const r = cleanSSEDataLine(buffer.trim(), publicModel, getRequestId(c), isDeveloperMode(c));
         if (r.line === "data: [DONE]") sawDone = true;
         if (r.line !== null) await stream.write(r.line + "\n");
       }

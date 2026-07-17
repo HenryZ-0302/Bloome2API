@@ -88,13 +88,11 @@ test("model catalog includes latest discovered model aliases", () => {
   assert.match(source, /id: "MiniMax-M3"/);
   assert.match(source, /id: "MiniMax-M3-thinking"/);
   assert.match(source, /id: "gemini-3\.5-flash"/);
-  assert.match(source, /id: "gemini-3\.5-flash-thinking"/);
   assert.match(source, /id: "glm-5\.2"/);
   assert.match(source, /id: "kimi-k2\.7-code"/);
   assert.match(source, /"minimax-m3": 131072/);
   assert.match(source, /"minimax-m3-thinking": 131072/);
   assert.match(source, /"gemini-3\.5-flash": 65536/);
-  assert.match(source, /"gemini-3\.5-flash-thinking": 65536/);
   assert.match(source, /model === "MiniMax-M3"/);
   assert.match(source, /model === "MiniMax-M3-thinking"/);
   assert.match(source, /case "MiniMax-M3":/);
@@ -104,7 +102,6 @@ test("model catalog includes latest discovered model aliases", () => {
   assert.match(modelsDoc, /`MiniMax-M3-thinking`/);
   assert.match(modelsDoc, /Gemini 3\.5 Flash/);
   assert.match(modelsDoc, /`gemini-3\.5-flash`/);
-  assert.match(modelsDoc, /`gemini-3\.5-flash-thinking`/);
   assert.match(modelsDoc, /GLM 5\.2/);
   assert.match(modelsDoc, /`glm-5\.2`/);
   assert.match(modelsDoc, /Kimi K2\.7 Code/);
@@ -112,7 +109,6 @@ test("model catalog includes latest discovered model aliases", () => {
   assert.match(modelsDoc, /Kimi K3/);
   assert.match(modelsDoc, /`kimi-k3`/);
   assert.match(thinkingDoc, /`MiniMax-M3-thinking`/);
-  assert.match(thinkingDoc, /`gemini-3\.5-flash-thinking`/);
   assert.match(thinkingDoc, /`glm-5\.2`/);
   assert.match(thinkingDoc, /`kimi-k2\.7-code`/);
   assert.doesNotMatch(source, /id: "glm-5\.0"/);
@@ -120,12 +116,18 @@ test("model catalog includes latest discovered model aliases", () => {
   assert.doesNotMatch(source, /id: "glm-5\.2-thinking"/);
   assert.doesNotMatch(source, /id: "kimi-k2\.7-code-thinking"/);
   assert.doesNotMatch(source, /id: "kimi-k3-thinking"/);
+  assert.doesNotMatch(source, /id: "gpt-5\.[^"]*-thinking"/);
+  assert.doesNotMatch(source, /id: "gemini-[^"]*-thinking"/);
+  assert.doesNotMatch(source, /getGPTThinkingConfig|isGPTThinkingAlias/);
+  assert.doesNotMatch(source, /getGoogleThinkingConfig|isGoogleThinkingAlias/);
   assert.doesNotMatch(modelsDoc, /\| GLM 5\.0 \|/);
   assert.doesNotMatch(modelsDoc, /\| DeepSeek V3\.2 \|/);
   assert.doesNotMatch(thinkingDoc, /`glm-5\.0`/);
   assert.doesNotMatch(thinkingDoc, /`deepseek-v3-2`/);
   assert.doesNotMatch(thinkingDoc, /`glm-5\.2-thinking`/);
   assert.doesNotMatch(thinkingDoc, /`kimi-k2\.7-code-thinking`/);
+  assert.doesNotMatch(thinkingDoc, /`gpt-5\.[^`]*-thinking`/);
+  assert.doesNotMatch(thinkingDoc, /`gemini-[^`]*-thinking`/);
 });
 
 test("models docs record the official Bloome pricing catalog", () => {
@@ -200,7 +202,7 @@ test("model catalog includes Sonnet 5, GPT 5.6 variants, and Grok 4.5", () => {
   assert.ok(modelsStart > 0);
   assert.ok(helpersStart > modelsStart);
   const modelCatalog = source.slice(modelsStart, helpersStart);
-  assert.equal([...modelCatalog.matchAll(/\{ id: "/g)].length, 41);
+  assert.equal([...modelCatalog.matchAll(/\{ id: "/g)].length, 35);
 
   const thinkingStart = source.indexOf("function getClaudeThinkingConfig");
   const googleStart = source.indexOf("function isGoogleModel", thinkingStart);
