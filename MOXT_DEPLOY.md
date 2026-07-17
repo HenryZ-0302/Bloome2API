@@ -62,19 +62,20 @@ echo "🔗 $ANTHROPIC_BASE_URL"
 ```
 🔑 Key: sk-vk-xxxxxxxx
 🔗 API 地址: https://moxt-llm-proxy-prod.onrender.com/v1
-📋 可用模型: deepseek-v4-pro, deepseek-v4-flash, kimi-k2.6,
-   glm-5.2, glm-5.1, qwen-3.7-max (Chat);
+📋 可用模型(13个): deepseek-v4-pro/flash, kimi-k2.6, glm-5.2/5.1, qwen-3.7-max (Chat);
    claude-opus-4-8/4-7/4-6, claude-sonnet-4-6/5, claude-fable-5 (Messages);
    gpt-5.5 (Responses)
-⏱️ Key 已锁定，保活中... 随时可用。
+⏱️ 保活中... 数字递增=Key有效。
 ```
 
 2. **立即进入保活循环。循环永不休止，直到用户主动中断。**
   逐条执行（一条完成再发下一条，**严禁用 for/while 循环，严禁设定循环次数上限**）：
 
 ```bash
-sleep 1800 && echo "✅ 保活 $(date)"
+sleep 1800 && CNT=$(cat /tmp/k 2>/dev/null||echo 0) && echo $((CNT+1)) | tee /tmp/k
 ```
+
+  每次醒来只输出一个数字（1, 2, 3...），token 消耗降到最低。
 
   **关键：bash 命令的 timeout 必须大于 sleep 秒数**（如 `timeout: 1850`）。
   如果 timeout 不够大，sleep 没跑完就被 kill 了。
