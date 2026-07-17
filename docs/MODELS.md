@@ -63,7 +63,7 @@
 
 ### 官方目录与 NewAPI 差异
 
-- Bloome 官方目录新增了 **Kimi K3**。当前还没有将它加入 NewAPI `/models`，需要先确认真实上游 alias 和调用能力。
+- Bloome 官方目录新增了 **Kimi K3**。上游已确认真实 alias 为 `kimi-k3`，现已加入 NewAPI `/models`。
 - NewAPI 仍保留 **GPT 5.4** 和 **GPT 5.4 Mini**，但它们已不在这份 Bloome 官方展示目录中。
 - `*-thinking` 是 NewAPI 内部兼容 alias，不是 Bloome 官网单独展示的基础模型，因此不按“已下架模型”计算。
 
@@ -98,6 +98,7 @@
 | Grok 4.5 | `grok-4.5` | OpenAI | `grok-4.5` | 否 | 原生返回 `reasoning_content`；effort 效果不稳定，不增加 thinking alias |
 | GLM 5.1 | `glm-5.1` | OpenAI | `glm-5.1` | 否 | 返回名未变 |
 | GLM 5.2 | `glm-5.2` | OpenAI | `glm-5.2` | 否 | 新模型；原生返回 `reasoning_content`，不额外提供 thinking alias |
+| Kimi K3 | `kimi-k3` | OpenAI | `kimi-k3` | 否 | 1M 上下文；原生返回 `reasoning_content`，不额外提供 thinking alias |
 | Kimi K2.7 Code | `kimi-k2.7-code` | OpenAI | `kimi-k2.7-code` | 否 | 新代码能力模型；原生返回 `reasoning_content`，不额外提供 thinking alias |
 | Kimi K2.6 | `kimi-k2.6` | OpenAI | `kimi-k2.6` | 否 | 返回名未变 |
 | Kimi K2.5 | `kimi-k2.5` | OpenAI | `kimi-k2.6` | 是 | 公开 alias 保留 K2.5，实际上游落到 K2.6 |
@@ -225,6 +226,7 @@ Kimi / GPT / GLM / DeepSeek / Mimo 走 OpenAI 原生分支，用户未传时网�
 | Xiaomi MiMo V2.5 Pro | `mimo-v2-pro` |
 | Xiaomi MiMo V2.5 | `mimo-v2-omni` |
 | GPT 5.4 Mini | `gpt-5.4-mini` |
+| Kimi K3 | `kimi-k3` |
 | Kimi K2.7 Code | `kimi-k2.7-code` |
 | MiniMax M2.7 | `MiniMax-M2.7` |
 | MiniMax M3 | `MiniMax-M3` |

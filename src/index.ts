@@ -488,6 +488,7 @@ const MODELS = [
   { id: "kimi-k2.6", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "kimi-k2.6", parent: null },
   { id: "kimi-k2.5", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "kimi-k2.5", parent: null },
   { id: "kimi-k2.7-code", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "kimi-k2.7-code", parent: null },
+  { id: "kimi-k3", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "kimi-k3", parent: null },
   { id: "mimo-v2-pro", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "mimo-v2-pro", parent: null },
   { id: "mimo-v2-omni", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "mimo-v2-omni", parent: null },
   { id: "deepseek-v4-pro", object: "model", created: 1687882411, owned_by: PUBLIC_MODEL_OWNER, root: "deepseek-v4-pro", parent: null },

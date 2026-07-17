@@ -109,6 +109,8 @@ test("model catalog includes latest discovered model aliases", () => {
   assert.match(modelsDoc, /`glm-5\.2`/);
   assert.match(modelsDoc, /Kimi K2\.7 Code/);
   assert.match(modelsDoc, /`kimi-k2\.7-code`/);
+  assert.match(modelsDoc, /Kimi K3/);
+  assert.match(modelsDoc, /`kimi-k3`/);
   assert.match(thinkingDoc, /`MiniMax-M3-thinking`/);
   assert.match(thinkingDoc, /`gemini-3\.5-flash-thinking`/);
   assert.match(thinkingDoc, /`glm-5\.2`/);
@@ -117,6 +119,7 @@ test("model catalog includes latest discovered model aliases", () => {
   assert.doesNotMatch(source, /id: "deepseek-v3-2"/);
   assert.doesNotMatch(source, /id: "glm-5\.2-thinking"/);
   assert.doesNotMatch(source, /id: "kimi-k2\.7-code-thinking"/);
+  assert.doesNotMatch(source, /id: "kimi-k3-thinking"/);
   assert.doesNotMatch(modelsDoc, /\| GLM 5\.0 \|/);
   assert.doesNotMatch(modelsDoc, /\| DeepSeek V3\.2 \|/);
   assert.doesNotMatch(thinkingDoc, /`glm-5\.0`/);
@@ -182,6 +185,7 @@ test("model catalog includes Sonnet 5, GPT 5.6 variants, and Grok 4.5", () => {
     "gpt-5.6-terra",
     "gpt-5.6-luna",
     "grok-4.5",
+    "kimi-k3",
   ]) {
     assert.match(source, new RegExp(`id: "${modelId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`));
   }
@@ -196,7 +200,7 @@ test("model catalog includes Sonnet 5, GPT 5.6 variants, and Grok 4.5", () => {
   assert.ok(modelsStart > 0);
   assert.ok(helpersStart > modelsStart);
   const modelCatalog = source.slice(modelsStart, helpersStart);
-  assert.equal([...modelCatalog.matchAll(/\{ id: "/g)].length, 40);
+  assert.equal([...modelCatalog.matchAll(/\{ id: "/g)].length, 41);
 
   const thinkingStart = source.indexOf("function getClaudeThinkingConfig");
   const googleStart = source.indexOf("function isGoogleModel", thinkingStart);
