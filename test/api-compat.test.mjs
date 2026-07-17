@@ -132,9 +132,10 @@ test("models docs record the official Bloome pricing catalog", () => {
   assert.ok(supportedStart > pricingStart);
 
   const pricing = modelsDoc.slice(pricingStart, supportedStart);
-  assert.match(pricing, /2026-07-14/);
-  assert.match(pricing, /25 个模型/);
+  assert.match(pricing, /2026-07-17/);
+  assert.match(pricing, /26 个模型/);
   assert.match(pricing, /每 100 万 tokens/);
+  assert.match(pricing, /\| Kimi K3 \| 视觉 \| 1M \| \$3\.00 \| \$0\.30 \| \$15\.00 \|/);
 
   for (const modelName of [
     "Claude Opus 4.8",
