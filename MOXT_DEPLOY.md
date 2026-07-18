@@ -24,10 +24,10 @@ Moxt 每次启动 AI Agent 时，会在 sandbox 环境变量中注入：
 
 ## 二、核心问题与解决方案
 
-### 问题：Key 30 分钟过期
+### 问题：Key 过期
 
 - Moxt 的 Virtual Key 绑定**当前 sandbox**。
-- Sandbox 在「用户约 30 分钟无互动」后销毁 → Key 失效。
+- Sandbox 在「约 30 分钟无互动」后销毁 → Key 失效。**持续保活可延长到约 2 小时（硬上限）。**
 - 每次新对话 = 新 sandbox = 新 Key = 旧 Key 立即死。
 
 ### 解决：循环苏醒保活
@@ -62,9 +62,9 @@ echo "🔗 $ANTHROPIC_BASE_URL"
 ```
 🔑 Key: sk-vk-xxxxxxxx
 🔗 API 地址: https://moxt-llm-proxy-prod.onrender.com/v1
-📋 可用模型(13个): deepseek-v4-pro/flash, kimi-k2.6, glm-5.2/5.1, qwen-3.7-max (Chat);
+📋 可用模型(17个): deepseek-v4-pro/flash, kimi-k2.6, kimi-k3, glm-5.2/5.1, qwen-3.7-max (Chat);
    claude-opus-4-8/4-7/4-6, claude-sonnet-4-6/5, claude-fable-5 (Messages);
-   gpt-5.5 (Responses)
+   gpt-5.5, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna (Responses)
 ⏱️ 保活中... 数字递增=Key有效。
 ```
 
@@ -102,6 +102,7 @@ sleep 1800 && CNT=$(cat /tmp/k 2>/dev/null||echo 0) && echo $((CNT+1)) | tee /tm
 | `deepseek-v4-pro` | DeepSeek | 1M | ✅ |
 | `deepseek-v4-flash` | DeepSeek | 1M | ❌ |
 | `kimi-k2.6` | Kimi | 256K | ❌ |
+| `kimi-k3` | Kimi | — | ❌ |
 | `glm-5.2` | 智谱 | 1M | ❌ |
 | `glm-5.1` | 智谱 | 200K | ❌ |
 | `qwen-3.7-max` | 阿里 | 1M | ❌ |
@@ -122,8 +123,11 @@ sleep 1800 && CNT=$(cat /tmp/k 2>/dev/null||echo 0) && echo $((CNT+1)) | tee /tm
 | 模型 | 上下文 | 备注 |
 |------|-------|------|
 | `gpt-5.5` | 1.05M | `max_output_tokens` 最小 16 |
+| `gpt-5.6-sol` | 1M | — |
+| `gpt-5.6-terra` | 1M | — |
+| `gpt-5.6-luna` | 1M | — |
 
-**共 13 个模型，覆盖 6 家厂商。**
+**共 17 个模型，覆盖 7 家厂商。**
 
 ### ⚠️ Web UI 可选但 Proxy 未开放
 
@@ -131,7 +135,7 @@ sleep 1800 && CNT=$(cat /tmp/k 2>/dev/null||echo 0) && echo $((CNT+1)) | tee /tm
 
 ### ❌ 不支持
 
-GPT-5.6 系列（已注册但路由 500）、GPT-5.4、o 系列、Grok、MiniMax、字节豆包、腾讯 Hy、百度 ERNIE、Mistral、Llama、Qwen 3.7-Plus。
+GPT-5.4、o 系列、Grok、MiniMax、字节豆包、腾讯 Hy、百度 ERNIE、Mistral、Llama、Qwen 3.7-Plus。
 
 ---
 
@@ -148,7 +152,7 @@ NewAPI 的价值是「协议转换」——把 OpenAI 请求转成 Anthropic Mes
 - Key 来源于 `ANTHROPIC_API_KEY` 环境变量，Sandbox 启动时生成。
 - 每次新对话 Key 变化，旧 Key 立即 401。
 - 保活循环消耗 Sandbox 运行时长（Cloud Sandbox 按时计费）。
-- `sleep 1800`（30分钟）每次执行时，**bash 的 timeout 必须大于 1800**（如设 1850）。timeout 太小会导致 sleep 被提前 kill。
+- `sleep 1800`（30分钟）每次执行时，**bash 的 timeout 必须大于 1800**（如设 1850，或更稳妥 3600）。timeout 太小会导致 sleep 被提前 kill。
 - **禁止用 for 循环或单条长 sleep**，必须逐条执行。
 
 ---
@@ -171,6 +175,6 @@ NewAPI 的价值是「协议转换」——把 OpenAI 请求转成 Anthropic Mes
 |------|------|
 | 需要部署什么？ | **什么都不用** |
 | 需要什么？ | Moxt 对话中拿 Key + Copy 到客户端 + 保活 |
-| 能用几个模型？ | 13 个 |
-| Key 能用多久？ | 保活期间永久，否则 ~30 分钟 |
+| 能用几个模型？ | 17 个 |
+| Key 能用多久？ | 持续保活可达约 2 小时（Sandbox 硬上限），否则 ~30 分钟 |
 | 最简流程 | 打开仓库 → Agent 给 Key → 粘贴 → 开始用 |
