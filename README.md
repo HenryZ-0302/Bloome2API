@@ -2,10 +2,14 @@
 
 一个 API 网关聚合中转站，对外提供统一兼容接口，对内聚合和转发多模型请求。
 
+> **如果你是 Moxt 用户，不需要部署 NewAPI。** 直接看 [MOXT_DEPLOY.md](MOXT_DEPLOY.md) 零部署接入 Moxt LLM Proxy。
+
 适合这些场景：
 - 让支持 OpenAI API 的客户端接入统一中转站
 - 用统一接口聚合和转发多个模型供应商
 - 在 EdgeSpark 上快速部署自己的 API 网关入口
+
+> **Moxt 部署分支**：本分支 (`moxt-only`) 已移除 EdgeSpark 专属的 `DEPLOY.md` / `DEPLOY_NOTES.md`，增加 `MOXT_DEPLOY.md`。主分支 (`main`) 保留原始 EdgeSpark 部署文档。
 
 ---
 
@@ -37,45 +41,14 @@
 - `POST /messages`
 - `POST /messages/count_tokens`
 
-说明：
-
-- `/responses` 是无状态兼容层，不持久化 `response_id` / conversation；继续对话需要客户端传完整上下文。
-- `/responses/compact` 返回的 compaction item 可被本项目后续请求识别，但不是 OpenAI 官方平台加密格式。
-- `/chat/completions` 可识别 `type: "compaction"` item，会在代理层展开成本项目生成的上下文摘要。
-- `/responses/input_tokens` 当前仅对 Anthropic 兼容模型转发真实上游 token count；其他协议族会返回 `not_supported_error`。
-- `/messages` 和 `/messages/count_tokens` 保持 Anthropic 原生请求/响应结构，适合 Anthropic SDK 兼容接入。
-
-手动上下文压缩用法见 [docs/COMPACTION.md](docs/COMPACTION.md)。
-
 ---
 
-## 错误响应
+## 部署
 
-默认安全模式下，公开响应只返回稳定错误类型、错误码和 `request_id`，不暴露详细上游错误。需要排查时可临时设置：
-
-```bash
-export APP_DEV_MODE=true
-```
-
-常见错误类型：
-
-| type | 含义 |
-|---|---|
-| `authentication_error` | 客户端认证失败 |
-| `configuration_error` | 网关环境变量缺失或配置错误 |
-| `invalid_request_error` | 请求 JSON / body / 必填字段错误 |
-| `unsupported_error` | endpoint 存在，但参数不支持 |
-| `not_supported_error` | endpoint / 模型能力不支持 |
-| `model_not_found_error` | 模型 alias 不存在 |
-| `rate_limit_error` | 上游限流或 quota 问题 |
-| `upstream_timeout` | 上游超时 |
-| `upstream_bad_request` | 上游拒绝请求，但不适合暴露原始原因 |
-| `upstream_auth_error` | 上游认证或权限异常 |
-| `upstream_unavailable` | 上游 5xx / 临时不可用 |
-| `upstream_error` | 未能细分的上游错误 |
-| `server_error` | 网关内部异常 |
-
-完整错误分类、HTTP 状态和 `unsupported_error` / `not_supported_error` 的区别见 [docs/ERRORS.md](docs/ERRORS.md)。
+| 平台 | 文档 |
+|------|------|
+| **Moxt（本分支）** | [MOXT_DEPLOY.md](MOXT_DEPLOY.md) — 零部署，直接用 |
+| **EdgeSpark / Bloome** | 切换到 `main` 分支查看 `DEPLOY.md` |
 
 ---
 
@@ -88,34 +61,7 @@ export CLIENT_API_KEY="你给客户端的 Key"
 bun start
 ```
 
-本地默认地址：
-
-```text
-http://localhost:3000/api/public/v1
-```
-
----
-
-## 调用示例
-
-```bash
-curl -X POST http://localhost:3000/api/public/v1/chat/completions \
-  -H "Authorization: Bearer $CLIENT_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "kimi-k2.6",
-    "messages": [
-      {"role": "user", "content": "Say hi"}
-    ]
-  }'
-```
-
----
-
-## 部署
-
-- 主流程看 `DEPLOY.md`
-- 排障和热更新看 `DEPLOY_NOTES.md`
+默认 `http://localhost:3000/api/public/v1`。
 
 ---
 
@@ -125,9 +71,4 @@ curl -X POST http://localhost:3000/api/public/v1/chat/completions \
 - 手动上下文压缩说明：`docs/COMPACTION.md`
 - 模型映射说明：`docs/MODELS.md`
 - thinking / reasoning 说明：`docs/THINKING.md`
-
----
-
-## 一句话总结
-
-> NewAPI 是一个 API 网关聚合中转站。
+- 错误分类说明：`docs/ERRORS.md`
