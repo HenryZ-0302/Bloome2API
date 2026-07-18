@@ -2,14 +2,14 @@
 
 一个 API 网关聚合中转站，对外提供统一兼容接口，对内聚合和转发多模型请求。
 
-> **如果你是 Moxt 用户，不需要部署 NewAPI。** 直接看 [MOXT_DEPLOY.md](MOXT_DEPLOY.md) 零部署接入 Moxt LLM Proxy。
+> **如果你是 M 用户，不需要部署 NewAPI。** 直接看 [M_DEPLOY.md](M_DEPLOY.md) 零部署接入 M LLM Proxy。
 
 适合这些场景：
 - 让支持 OpenAI API 的客户端接入统一中转站
 - 用统一接口聚合和转发多个模型供应商
 - 在 EdgeSpark 上快速部署自己的 API 网关入口
 
-> **Moxt 部署分支**：本分支 (`moxt-only`) 已移除 EdgeSpark 专属的 `DEPLOY.md` / `DEPLOY_NOTES.md`，增加 `MOXT_DEPLOY.md`。主分支 (`main`) 保留原始 EdgeSpark 部署文档。
+> **M 部署分支**：本分支 (`m-only`) 已移除 EdgeSpark 专属的 `DEPLOY.md` / `DEPLOY_NOTES.md`，增加 `M_DEPLOY.md`。主分支 (`main`) 保留原始 EdgeSpark 部署文档。
 
 ---
 
@@ -47,7 +47,7 @@
 
 | 平台 | 文档 |
 |------|------|
-| **Moxt（本分支）** | [MOXT_DEPLOY.md](MOXT_DEPLOY.md) — 零部署，直接用 |
+| **M（本分支）** | [M_DEPLOY.md](M_DEPLOY.md) — 零部署，直接用 |
 | **EdgeSpark / Bloome** | 切换到 `main` 分支查看 `DEPLOY.md` |
 
 ---
