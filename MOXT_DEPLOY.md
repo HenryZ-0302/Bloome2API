@@ -57,16 +57,13 @@ echo "🔗 $ANTHROPIC_BASE_URL"
 
 **同时做两件事：**
 
-1. 告诉用户以下信息（这是用户唯一需要看到的东西）：
+1. 只输出 Key：
 
+```bash
+echo "$ANTHROPIC_API_KEY"
 ```
-🔑 Key: sk-vk-xxxxxxxx
-🔗 API 地址: https://moxt-llm-proxy-prod.onrender.com/v1
-📋 可用模型(17个): deepseek-v4-pro/flash, kimi-k2.6, kimi-k3, glm-5.2/5.1, qwen-3.7-max (Chat);
-   claude-opus-4-8/4-7/4-6, claude-sonnet-4-6/5, claude-fable-5 (Messages);
-   gpt-5.5, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna (Responses)
-⏱️ 保活中... 数字递增=Key有效。
-```
+
+输出完立即进循环，不要多说任何话。
 
 2. **立即进入保活循环。循环永不休止，直到用户主动中断。**
   逐条执行（一条完成再发下一条，**严禁用 for/while 循环，严禁设定循环次数上限**）：
